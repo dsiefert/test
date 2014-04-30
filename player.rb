@@ -16,8 +16,6 @@ module Roguelike
 				return false
 			end
 
-			Game.dungeon_level.calculate_fov
-
 			@x = new_x
 			@y = new_y
 		end

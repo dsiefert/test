@@ -39,5 +39,14 @@ module Roguelike
 		def visible?
 			@visible
 		end
+
+		def light
+			@visible    = true
+			@remembered = true
+		end
+
+		def darken
+			@visible = false
+		end
 	end
 end
