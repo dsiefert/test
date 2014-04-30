@@ -1,5 +1,7 @@
 module Roguelike
 	class Tile < Point
+		attr_reader :type, :color, :character, :transit_time
+
 		# will need some sort of list of tile types, e.g.
 		# 	dirt (character: ., color: 'grey', transit-time: 1)
 		#   grass (character: ", color: 'green', transit-time: 1)
@@ -21,9 +23,10 @@ module Roguelike
 
 			raise Error, "Unknown tile type: #{type}" if @@tile_types[type].nil?
 
-			@type      = type
-			@color     = @@tile_types[type][:color]
-			@character = @@tile_types[type][:character]
+			@type         = type
+			@color        = @@tile_types[type][:color]
+			@character    = @@tile_types[type][:character]
+			@transit_time = @@tile_types[type][:transit_time]
 		end
 	end
 end

@@ -9,6 +9,11 @@ module Roguelike
 				return false
 			end
 
+			if !Game.dungeon_level.walkable?(new_x, new_y)
+				Dispatcher.queue_message("Ouch, you bumped into a wall!")
+				return false
+			end
+
 			@x = new_x
 			@y = new_y
 		end

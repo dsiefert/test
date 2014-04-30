@@ -27,8 +27,15 @@ module Roguelike
 			@title          = title.slice(0, 72)
 			@rooms          = []
 			@corridors      = []
-			@tiles          = []
 			@map_attempts   = 0
+
+			@tiles = []
+			@columns.times do |x|
+				@tiles[x] = []
+				@rows.times do |y|
+					@tiles[x][y] = nil
+				end
+			end
 
 			@offset_x = ((80 - @columns) / 2).floor
 			@offset_y = ((25 - @rows) / 2).floor
@@ -42,7 +49,9 @@ module Roguelike
 			# 	draw tile if visible
 			# every item (inc monsters inc PC)
 			# 	draw item if item is on a visible point and is visible
-			@tiles.each{ |tile| tile.draw }
+			@tiles.each do |col|
+				col.each { |tile| tile.draw }
+			end
 
 			# draw the frame around the map
 			frame_symbol = "+"
@@ -78,7 +87,25 @@ module Roguelike
 		end
 
 		def unoccupied?(x, y)
-			return tile_type(x, y) == false
+			tile_type(x, y) == false
+		end
+
+		def walkable?(x, y)
+			return false if x.nil? || y.nil?
+
+			!@tiles[x][y].transit_time.nil?
+		end
+
+		def random_walkable_square
+			x = nil
+			y = nil
+
+			until walkable?(x, y)
+				x = Random.rand(0 .. columns - 1)
+				y = Random.rand(0 .. rows - 1)
+			end 
+
+			[x, y]
 		end
 
 		def area_empty?(x1, y1, x2, y2, options = {})
@@ -154,6 +181,12 @@ module Roguelike
 			@rooms = []
 			@corridors = []
 			@tiles = []
+			@columns.times do |x|
+				@tiles[x] = []
+				@rows.times do |y|
+					@tiles[x][y] = nil
+				end
+			end
 
 			@map_attempts += 1
 
@@ -229,7 +262,7 @@ module Roguelike
 								:soft_rock
 						end
 					end
-					@tiles.push(Tile.new(self, x, y, type))
+					@tiles[x][y] = (Tile.new(self, x, y, type))
 				end
 			end
 
