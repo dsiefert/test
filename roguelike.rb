@@ -38,6 +38,10 @@ module Roguelike
 
 		Game.start
 
+		until Game.over?
+			Game.take_turn
+		end
+
 		# loop:
 		# allow all characters to take turns
 		# if PC is still alive, continue

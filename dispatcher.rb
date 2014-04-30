@@ -25,7 +25,7 @@ module Roguelike
 
 		def display_messages
 			clear_messages
-			
+
 			row = 25
 			while row < 29 && (message = message_queue.shift) do
 				$window.attrset(Ncurses::COLOR_PAIR(8))
@@ -75,7 +75,6 @@ module Roguelike
 				end
 			end
 			Game.dungeon_level.draw
-			Game.take_turn
 		end
 	end
 end

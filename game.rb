@@ -31,12 +31,10 @@ module Roguelike
 			coord_x, coord_y = dungeon_level.random_walkable_square
 			Game.player = Player.new(dungeon_level, coord_x, coord_y)
 			dungeon_level.draw
-
-			take_turn
 		end
 
 		def take_turn
-			Dispatcher.handle($window.getch) unless Game.over?
+			Dispatcher.handle($window.getch)
 		end
 
 		def over?
