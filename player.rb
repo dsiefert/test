@@ -1,5 +1,7 @@
 module Roguelike
 	class Player < Point
+		attr_reader :sight_radius
+
 		def move(x_direction, y_direction)
 			new_x = @x + x_direction
 			new_y = @y + y_direction
@@ -14,6 +16,8 @@ module Roguelike
 				return false
 			end
 
+			Game.dungeon_level.calculate_fov
+
 			@x = new_x
 			@y = new_y
 		end
@@ -23,6 +27,7 @@ module Roguelike
 
 			@character = "@"
 			@color = 16
+			@sight_radius = 5
 		end
 	end
 end

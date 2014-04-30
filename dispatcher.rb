@@ -15,15 +15,19 @@ module Roguelike
 			true
 		end
 
-		def display_messages
+		def clear_messages
 			# message area is rows 25-29
-			row = 25
 			(25 .. 29).each do |y|
 				$window.move(y, 0)
 				$window.clrtoeol
 			end
+		end
 
-			while (message = message_queue.shift) && row < 29 do
+		def display_messages
+			clear_messages
+			
+			row = 25
+			while row < 29 && (message = message_queue.shift) do
 				$window.attrset(Ncurses::COLOR_PAIR(8))
 				$window.mvaddstr(row, 0, message)
 				row += 1
@@ -71,6 +75,7 @@ module Roguelike
 				end
 			end
 			Game.dungeon_level.draw
+			Game.take_turn
 		end
 	end
 end

@@ -36,15 +36,11 @@ module Roguelike
 
 		$window.bkgd(Ncurses.COLOR_PAIR(8));
 
-		Game.begin
+		Game.start
 
 		# loop:
 		# allow all characters to take turns
 		# if PC is still alive, continue
-
-		until Game.over? do
-			Dispatcher.handle($window.getch)
-		end
 
 		# dywypi
 

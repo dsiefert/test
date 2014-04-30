@@ -11,7 +11,7 @@ module Roguelike
 			attr_accessor :dungeon_level, :player
 		end
 
-		def begin
+		def start
 			titles = [
 				"A dark and gloomy snide field",
 				"A mysterious dungeon",
@@ -31,6 +31,12 @@ module Roguelike
 			coord_x, coord_y = dungeon_level.random_walkable_square
 			Game.player = Player.new(dungeon_level, coord_x, coord_y)
 			dungeon_level.draw
+
+			take_turn
+		end
+
+		def take_turn
+			Dispatcher.handle($window.getch) unless Game.over?
 		end
 
 		def over?

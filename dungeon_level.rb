@@ -68,9 +68,10 @@ module Roguelike
 			# and the title. note that we trim it to 72 max to allow three columns plus a space on either side
 			$window.mvaddstr(@offset_y - 1, 3, " #{@title} ")
 
+			Dispatcher.display_messages
+
 			# set the cursor to the player's current position
 			Game.player.draw
-			Dispatcher.display_messages
 			$window.move(Game.player.y + offset_y, Game.player.x + offset_x)
 
 			# all done!
@@ -93,7 +94,7 @@ module Roguelike
 		def walkable?(x, y)
 			return false if x.nil? || y.nil?
 
-			!@tiles[x][y].transit_time.nil?
+			!square(x, y).transit_time.nil?
 		end
 
 		def random_walkable_square
@@ -106,6 +107,10 @@ module Roguelike
 			end 
 
 			[x, y]
+		end
+
+		def square(x, y)
+			@tiles[x][y]
 		end
 
 		def area_empty?(x1, y1, x2, y2, options = {})
@@ -140,6 +145,18 @@ module Roguelike
 			end
 
 			val
+		end
+
+		def calculate_fov
+			x_min = [0, Game.player.x - Game.player.sight_radius].max
+			x_max = [rows, Game.player.x + Game.player.sight_radius].min
+			y_min = [0, Game.player.y - Game.player.sight_radius].max
+			y_max = [columns, Game.player.y + Game.player.sight_radius].min
+
+			(x_min .. x_max).each do |x|
+				(y_min .. y_max).each do |y|
+				end
+			end
 		end
 
 	private
