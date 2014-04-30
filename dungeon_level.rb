@@ -61,7 +61,7 @@ module Roguelike
 
 			# set the cursor to the player's current position
 			Game.player.draw
-#			Dispatcher.display_messages
+			Dispatcher.display_messages
 			$window.move(Game.player.y + offset_y, Game.player.x + offset_x)
 
 			# all done!
