@@ -13,12 +13,13 @@ module Roguelike
 		#
 		# probably has random dungeon map
 
-		ROOM_RATIO = 0.3
-		LOOP_RATIO = 0.1
+		ROOM_RATIO    = 0.30
+		LOOP_RATIO    = 0.10
+		ROOM_ATTEMPTS = 500
 
 		attr_reader :columns, :rows, :rooms, :corridors, :offset_y, :offset_x, :map_attempts
 
-		def initialize(title = "A mysterious dungeon", columns = 78, rows = 23, has_random_map = true, min_rooms = 6)
+		def initialize(title = "A mysterious dungeon", columns = 78, rows = 23, has_random_map = true)
 			Event.new("initialize", self)
 
 			@columns        = columns
@@ -40,17 +41,25 @@ module Roguelike
 			@offset_x = ((80 - @columns) / 2).floor
 			@offset_y = ((25 - @rows) / 2).floor
 
-			create_map(min_rooms) if has_random_map
+			create_map if has_random_map
 		end
 
 		def draw
+			calculate_fov
+
+			# clear what's there
+			rows.times do |row|
+				$window.move(row + offset_x, 0)
+				$window.clrtoeol
+			end
+
 			# actually draw it onscreen
 			# on every point on the map:
 			# 	draw tile if visible
 			# every item (inc monsters inc PC)
 			# 	draw item if item is on a visible point and is visible
 			@tiles.each do |col|
-				col.each { |tile| tile.draw }
+				col.each { |tile| tile.draw if tile.visible? }
 			end
 
 			# draw the frame around the map
@@ -148,13 +157,42 @@ module Roguelike
 		end
 
 		def calculate_fov
+			rad_sq = Game.player.sight_radius**2
+
+			columns.times do |x|
+				rows.times do |y|
+					square(x, y).darken
+				end
+			end
+
 			x_min = [0, Game.player.x - Game.player.sight_radius].max
-			x_max = [rows, Game.player.x + Game.player.sight_radius].min
+			x_max = [columns - 1, Game.player.x + Game.player.sight_radius].min
 			y_min = [0, Game.player.y - Game.player.sight_radius].max
-			y_max = [columns, Game.player.y + Game.player.sight_radius].min
+			y_max = [rows - 1, Game.player.y + Game.player.sight_radius].min
 
 			(x_min .. x_max).each do |x|
+				x_sq = (x - Game.player.x)**2
 				(y_min .. y_max).each do |y|
+					y_sq = (y - Game.player.y)**2
+
+					# within visible radius! mark that on the square
+					if (x_sq + y_sq) <= rad_sq && !square(x, y).visible?
+						square(x, y).light
+					end
+
+					# possible implementation:
+					# mark player "light"
+					# take each square at the periphery
+					# use line-drawing algorithm to approach player
+					# proceed toward player
+					# if you hit a square marked "dark", mark the whole list dark
+					# 	continue to next periphery square
+					# if you hit a square that's marked "light", mark the whole list light
+					# 	continue to next periphery square
+					# if you hit an opaque square, mark the whole list dark EXCEPT the last opaque one
+					# 	leave that last opaque square on the list and proceed along the line
+					# when done, check each square to determine if it's in visible radius
+					# actually show those that are both within radius and "light"
 				end
 			end
 		end
@@ -193,7 +231,7 @@ module Roguelike
 			(columns - 2).odd? ? columns - 2 : columns - 3
 		end
 
-		def create_map(min_rooms)
+		def create_map
 			# wipe the map in case this isn't the first go-round
 			@rooms = []
 			@corridors = []
@@ -210,12 +248,7 @@ module Roguelike
 			# start by adding a room
 			add_room
 
-			# this will need revising -- we don't necessarily want to stop at minrooms
-			i = 0
-			until (room_area / (rows * columns).to_f) > ROOM_RATIO do
-				i += 1
-				return create_map(min_rooms) if i > 500
-
+			ROOM_ATTEMPTS.times do
 				# pick a room at random, try a new one if that one's joins are all used up
 				room = nil
 				until room
@@ -247,46 +280,37 @@ module Roguelike
 				else
 					room.pop_join
 				end
-			end
 
-			# next, add a join and draw a corridor in the appropriate direction.
-			# 	if that fails, kill the corridor and join, go back to the room, and try again.
-			# 	the end of the corridor should be either a room or another corridor in another direction.
-			# stop (but retain the corridor) if it intersects with another corridor or room.
-			# 	in that case, go back to the last room and make a new join and corridor.
-			# 	this sets the @looped property on the corridor -- if we have a looped corridor,
-			# 	choose a random existing room and try again.
-			# if not, eventually you'll end up making another room.
-			# continue this way at least until you hit min_rooms.
-			# but keep drawing rooms.
-			# keep a fail counter, and if you at creating a new room, say, 10 times in a row, then stop.
-			# if this happens before min_rooms threshold, scrap the whole fucking thing and start over.
-
-			# make some tiles -- iterate over rows, then each value within each row
-			rows.times do |y|
-				columns.times do |x|
-					if x == 0 || x == columns - 1 || y == 0 || y == rows - 1
-						type = :hard_rock
-					else
-						type = case tile_type(x, y)
-							when true
-								:dirt
-							when 1
-								:obsidian
-							when 2
-								:moss
-							when false
-								:soft_rock
+				if (room_area / (rows * columns).to_f) > ROOM_RATIO
+					# make some tiles -- iterate over rows, then each value within each row
+					rows.times do |y|
+						columns.times do |x|
+							if x == 0 || x == columns - 1 || y == 0 || y == rows - 1
+								type = :hard_rock
+							else
+								type = case tile_type(x, y)
+									when true
+										:dirt
+									when 1
+										:obsidian
+									when 2
+										:moss
+									when false
+										:soft_rock
+								end
+							end
+							@tiles[x][y] = (Tile.new(self, x, y, type))
 						end
 					end
-					@tiles[x][y] = (Tile.new(self, x, y, type))
+
+					# populate the map with critters, toys, and staircases
+
+					# trigger event
+					return Event.new("create-complete", self)
 				end
 			end
 
-			# populate the map with critters, toys, and staircases
-
-			# trigger event
-			Event.new("create-complete", self)
+			create_map
 		end
 
 		def add_room(coordinates = {})
