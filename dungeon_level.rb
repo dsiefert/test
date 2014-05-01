@@ -182,7 +182,7 @@ module Roguelike
 
 					# possible implementation:
 					# mark player "light"
-					# take each square at the periphery
+					# take each square at the periphery (treat OOB squares as opaque)
 					# use line-drawing algorithm to approach player
 					# proceed toward player
 					# if you hit a square marked "dark", mark the whole list dark

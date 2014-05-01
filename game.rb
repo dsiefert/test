@@ -23,7 +23,9 @@ module Roguelike
 				"The lair of some foul creature",
 				"An abandoned dwarven settlement",
 				"Somewhere that smells bad",
-				"A vast network of claustrophobic tunnels"
+				"A vast network of claustrophobic tunnels",
+				"The tomb of something you'd rather not imagine",
+				"An undisclosed location"
 			]
 
 			dungeon_level = Roguelike::DungeonLevel.new(titles.sample)
