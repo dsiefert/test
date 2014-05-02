@@ -48,6 +48,11 @@ module Roguelike
 					message_queue.push("Pressed 27+#{char}")
 				end
 
+				if char == 91
+					char_2 = $window.getch
+					message_queue.push("Then pressed #{char_2}")
+				end
+
 				$window.nodelay(false)
 			else
 				# normal key pressed
