@@ -17,6 +17,7 @@ module Roguelike
 		end
 
 		def tread(target)
+			# TODO: some of that good ol' Ruby metaprogramming magic would make defining events easier
 			@tread.call(target)
 		end
 	end
