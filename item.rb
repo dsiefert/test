@@ -6,6 +6,10 @@ module Roguelike
 			super(map, x, y)
 
 			@name, @character, @color = name, character, color
+
+			set_tread do
+				Dispatcher.queue_message("You stepped on a #{@name}")
+			end
 		end
 
 		def set_tread(&block)

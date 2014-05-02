@@ -7,6 +7,9 @@ module Roguelike
 		attr_reader :event_name, :target, :time, :offset
 
 		def self.listen(name, listener, callback = nil, target = nil, &block)
+			# first remove any existing listeners by the same object for the same event
+			@@listeners -= @@listeners.select { |l| l.name == name && l.listener == listener }
+
 			@@listeners << EventListener.new(name, listener, callback || name.to_sym, target, &block)
 		end
 
@@ -28,7 +31,7 @@ module Roguelike
 	end
 
 	class EventListener
-		attr_reader :name
+		attr_reader :name, :listener
 
 		def initialize(name, listener, callback, target, &block)
 			@name     = name

@@ -278,6 +278,7 @@ module Roguelike
 					end
 
 					# populate the map with critters, toys, and staircases
+					@items << Item.new(self, *random_walkable_square, "Penis", "P", 2)
 					i = Item.new(self, *random_walkable_square, "Butt", "B", 8)
 					i.set_tread { Dispatcher.queue_message("Don't step on me, motherfucker!") }
 					@items << i
