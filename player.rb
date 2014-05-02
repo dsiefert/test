@@ -1,6 +1,8 @@
 module Roguelike
 	class Player < Point
-		attr_reader :sight_radius
+		def sight_radius
+			6
+		end
 
 		def move(x_direction, y_direction)
 			new_x = @x + x_direction
@@ -25,7 +27,6 @@ module Roguelike
 
 			@character = "@"
 			@color = 16
-			@sight_radius = 5
 		end
 	end
 end
