@@ -6,8 +6,8 @@ module Roguelike
 
 		attr_reader :event_name, :target, :time, :offset
 
-		def self.listen(name, listener)
-			@@listeners << [name, listener]
+		def self.listen(name, listener, callback, target = nil, &block)
+			@@listeners << EventListener.new(name, listener, callback, target, &block)
 		end
 
 		def self.summary
@@ -23,8 +23,24 @@ module Roguelike
 			@@log.push(self)
 			@@summary.push("#{event_name}, by #{target.class} (#{target.object_id}) at #{@time} (#{@offset})")
 
-			listeners = @@listeners.select { |l| l.first == event_name }.map { |l| l.last }
-			listeners.each { |l| l.send(event_name, target) }
+
+			@@listeners.map { |l| l.alert(target) if l.name == event_name }
+		end
+	end
+
+	class EventListener
+		attr_reader :name
+
+		def initialize(name, listener, callback, target, &block)
+			@name     = name
+			@listener = listener
+			@callback = callback
+			@target   = target
+			@block    = block if block_given?
+		end
+
+		def alert(target)
+			@listener.send(@callback, target) if (!@block || @block.call) && (@target.nil? || @target == target)
 		end
 	end
 end

@@ -1,5 +1,7 @@
 module Roguelike
 	class Item < Point
+		attr_reader :name
+
 		def initialize(map, x, y, name, character, color) #will later add type or something
 			super(map, x, y)
 
@@ -8,11 +10,11 @@ module Roguelike
 
 		def set_tread(&block)
 			@tread = block
-			Event.listen("move", self)
+			Event.listen("move", self, :tread, Game.player) { Game.player.location == location }
 		end
 
-		def move(caller)
-			@tread.call(caller) if @tread && x == Game.player.x && y == Game.player.y
+		def tread(target)
+			@tread.call(target)
 		end
 	end
 end
