@@ -43,7 +43,7 @@ module Roguelike
 				char = $window.getch
 
 				if char == -1
-					Game.over
+					Game.over!
 				else
 					message_queue.push("Pressed 27+#{char}")
 				end

@@ -43,12 +43,17 @@ module Roguelike
 			@over
 		end
 
-		def over
-			@over = true
+		def over!(message = nil)
+			@over        = true
+			@end_message = message
 		end
 
 		def player=(player)
 			@player = player unless @player
+		end
+
+		def end_message
+			@end_message
 		end
 	end
 end
