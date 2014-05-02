@@ -1,6 +1,7 @@
 module Roguelike
 	class Item < Point
 		attr_reader :name
+		attr_accessor :color
 
 		def initialize(map, x, y, name, character, color) #will later add type or something
 			super(map, x, y)

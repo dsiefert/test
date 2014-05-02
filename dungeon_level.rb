@@ -287,6 +287,7 @@ module Roguelike
 					i = Item.new(self, *random_walkable_square, "gallows", "%", 4)
 					i.set_tread do
 						Dispatcher.queue_message("You a dead motherfucker now!")
+						i.color = 2
 						i.set_tread { Game.over!("I told you so!") }
 					end
 					@items << i
