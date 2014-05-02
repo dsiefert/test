@@ -85,6 +85,8 @@ module Roguelike
 					Game.player.move(0, -1)
 				when 57
 					Game.player.move(1, -1)
+				when 't'.ord
+					Game.player.teleport
 				else
 					queue_message("Pressed #{char}")
 				end
