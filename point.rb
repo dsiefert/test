@@ -35,7 +35,7 @@ module Roguelike
 			end
 
 			$window.attron(Ncurses::COLOR_PAIR(color))
-			$window.mvaddstr(@y + @map.offset_y, @x + @map.offset_x, @character)
+			$window.mvaddstr(@y + @map.offset_y, @x + @map.offset_x, @character[0])
 			$window.attroff(Ncurses::A_BOLD)
 		end
 	end
