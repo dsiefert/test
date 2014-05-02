@@ -20,6 +20,8 @@ module Roguelike
 
 			@x = new_x
 			@y = new_y
+
+			Event.new("move", self)
 		end
 
 		def initialize(*args)
