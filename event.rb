@@ -6,8 +6,8 @@ module Roguelike
 
 		attr_reader :event_name, :target, :time, :offset
 
-		def self.listen(name, listener, callback, target = nil, &block)
-			@@listeners << EventListener.new(name, listener, callback, target, &block)
+		def self.listen(name, listener, callback = nil, target = nil, &block)
+			@@listeners << EventListener.new(name, listener, callback || name.to_sym, target, &block)
 		end
 
 		def self.summary
@@ -22,7 +22,6 @@ module Roguelike
 
 			@@log.push(self)
 			@@summary.push("#{event_name}, by #{target.class} (#{target.object_id}) at #{@time} (#{@offset})")
-
 
 			@@listeners.map { |l| l.alert(target) if l.name == event_name }
 		end
