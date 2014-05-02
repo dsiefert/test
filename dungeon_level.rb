@@ -33,6 +33,7 @@ module Roguelike
 			@title          = title.slice(0, 72)
 			@rooms          = []
 			@corridors      = []
+			@items          = []
 			@map_attempts   = 0
 
 			@tiles = []
@@ -81,6 +82,9 @@ module Roguelike
 
 			# and the title. note that we trim it to 72 max to allow three columns plus a space on either side
 			$window.mvaddstr(@offset_y - 1, 3, " #{@title} ")
+
+			#items!
+			@items.each { |item| item.draw if square(item.x, item.y).visible? || square(item.x, item.y).remembered? }
 
 			Dispatcher.display_messages
 
@@ -205,6 +209,7 @@ module Roguelike
 			@rooms = []
 			@corridors = []
 			@tiles = []
+			@items = []
 			@columns.times do |x|
 				@tiles[x] = []
 				@rows.times do |y|
@@ -273,6 +278,9 @@ module Roguelike
 					end
 
 					# populate the map with critters, toys, and staircases
+					i = Item.new(self, *random_walkable_square, "Butt", "B", 8)
+					i.set_tread { Dispatcher.queue_message("Don't step on me, motherfucker!") }
+					@items << i
 
 					# trigger event
 					return Event.new("create-complete", self)
