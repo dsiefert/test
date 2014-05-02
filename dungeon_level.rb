@@ -4,8 +4,11 @@ module Roguelike
 	require_relative 'point'
 	require_relative 'tile'
 	require_relative 'item'
+	require_relative 'fov'
 
 	class DungeonLevel
+		include FOV
+
 		# has tiles
 		# has items
 		# 	including monsters
@@ -13,17 +16,19 @@ module Roguelike
 		#
 		# probably has random dungeon map
 
-		ROOM_RATIO    = 0.30
+		ROOM_RATIO    = 0.28
 		LOOP_RATIO    = 0.10
 		ROOM_ATTEMPTS = 500
+		COLUMNS       = 78
+		ROWS          = 23
 
 		attr_reader :columns, :rows, :rooms, :corridors, :offset_y, :offset_x, :map_attempts
 
-		def initialize(title = "A mysterious dungeon", columns = 78, rows = 23, has_random_map = true)
+		def initialize(title = "A mysterious dungeon", has_random_map = true)
 			Event.new("initialize", self)
 
-			@columns        = columns
-			@rows           = rows
+			@columns        = COLUMNS
+			@rows           = ROWS
 			@has_random_map = has_random_map
 			@title          = title.slice(0, 72)
 			@rooms          = []
@@ -59,7 +64,7 @@ module Roguelike
 			# every item (inc monsters inc PC)
 			# 	draw item if item is on a visible point and is visible
 			@tiles.each do |col|
-				col.each { |tile| tile.draw if tile.visible? }
+				col.each { |tile| tile.draw if tile.visible? || tile.remembered? }
 			end
 
 			# draw the frame around the map
@@ -118,7 +123,12 @@ module Roguelike
 			[x, y]
 		end
 
-		def square(x, y)
+		def square(x, y = nil)
+			x, y = x unless y
+
+			# return something that resembles a tile if given out-of-bounds values, for FOV calculation
+			return FakeTile.instance unless (0 .. (columns - 1)).include?(x) && (0 .. (rows - 1)).include?(y)
+
 			@tiles[x][y]
 		end
 
@@ -154,47 +164,6 @@ module Roguelike
 			end
 
 			val
-		end
-
-		def calculate_fov
-			rad_sq = Game.player.sight_radius**2
-
-			columns.times do |x|
-				rows.times do |y|
-					square(x, y).darken
-				end
-			end
-
-			x_min = [0, Game.player.x - Game.player.sight_radius].max
-			x_max = [columns - 1, Game.player.x + Game.player.sight_radius].min
-			y_min = [0, Game.player.y - Game.player.sight_radius].max
-			y_max = [rows - 1, Game.player.y + Game.player.sight_radius].min
-
-			(x_min .. x_max).each do |x|
-				x_sq = (x - Game.player.x)**2
-				(y_min .. y_max).each do |y|
-					y_sq = (y - Game.player.y)**2
-
-					# within visible radius! mark that on the square
-					if (x_sq + y_sq) <= rad_sq && !square(x, y).visible?
-						square(x, y).light
-					end
-
-					# possible implementation:
-					# mark player "light"
-					# take each square at the periphery (treat OOB squares as opaque)
-					# use line-drawing algorithm to approach player
-					# proceed toward player
-					# if you hit a square marked "dark", mark the whole list dark
-					# 	continue to next periphery square
-					# if you hit a square that's marked "light", mark the whole list light
-					# 	continue to next periphery square
-					# if you hit an opaque square, mark the whole list dark EXCEPT the last opaque one
-					# 	leave that last opaque square on the list and proceed along the line
-					# when done, check each square to determine if it's in visible radius
-					# actually show those that are both within radius and "light"
-				end
-			end
 		end
 
 	private

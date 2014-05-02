@@ -1,6 +1,6 @@
 module Roguelike
 	class Tile < Point
-		attr_reader :type, :color, :character, :transit_time, :opaque
+		attr_reader :type, :color, :character, :transit_time
 
 		# will need some sort of list of tile types, e.g.
 		# 	dirt (character: ., color: 'grey', transit-time: 1)
@@ -32,6 +32,10 @@ module Roguelike
 			@remembered   = false
 		end
 
+		def opaque?
+			@opaque
+		end
+
 		def remembered?
 			@remembered
 		end
@@ -45,8 +49,34 @@ module Roguelike
 			@remembered = true
 		end
 
-		def darken
+		def forget
+			@remembered = false
+		end
+
+		def reinitialize_fov
 			@visible = false
+		end
+	end
+
+	class FakeTile
+		def self.instance
+			@@fake_tile ||= new
+		end
+
+		def light; end
+		def draw; end
+		def reinitialize_fov; end
+
+		def visible?
+			false
+		end
+
+		def remembered?
+			false
+		end
+
+		def opaque?
+			true
 		end
 	end
 end
