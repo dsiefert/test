@@ -11,6 +11,10 @@ module Roguelike
 			@map = map
 		end
 
+		def location
+			[x, y]
+		end
+
 		def draw
 			if @color.nil? || @character.nil? || @x.nil? || @y.nil?
 				raise Error, "Required attribute not set. Cannot draw point: #{@x}, #{@y} (Character: #{@character}, color: #{@color})"
