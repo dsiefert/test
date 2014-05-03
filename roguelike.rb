@@ -42,6 +42,8 @@ module Roguelike
 			Game.take_turn
 		end
 
+		Dispatcher.display_messages
+
 		# loop:
 		# allow all characters to take turns
 		# if PC is still alive, continue

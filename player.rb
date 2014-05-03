@@ -24,6 +24,13 @@ module Roguelike
 			Event.new("move", self)
 		end
 
+		def teleport
+			@x, @y = Game.dungeon_level.random_walkable_square
+
+			Event.new("move", self)
+			Dispatcher.queue_message("You teleport!", true)
+		end
+
 		def initialize(*args)
 			super(*args)
 

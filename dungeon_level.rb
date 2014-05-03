@@ -87,10 +87,11 @@ module Roguelike
 			#items!
 			@items.each { |item| item.draw if square(item.x, item.y).visible? || square(item.x, item.y).remembered? }
 
+			Game.player.draw
+
 			Dispatcher.display_messages
 
 			# set the cursor to the player's current position
-			Game.player.draw
 			$window.move(Game.player.y + offset_y, Game.player.x + offset_x)
 
 			# all done!
@@ -289,9 +290,12 @@ module Roguelike
 					@items << i
 					i = Item.new(self, *random_walkable_square, "gallows", "%", 4)
 					i.set_tread do
-						Dispatcher.queue_message("You a dead motherfucker now!")
+						Dispatcher.queue_message("You a dead motherfucker now!", true)
 						i.color = 2
-						i.set_tread { Game.over!("I told you so!") }
+						i.set_tread do
+							Dispatcher.queue_message("I told you you was dead, motherfucker!")
+							Game.over!
+						end
 					end
 					@items << i
 

@@ -9,8 +9,8 @@ module Roguelike
 			attr_reader :message_queue, :message_log
 		end
 
-		def queue_message(message)
-			message_queue.push(message)
+		def queue_message(text, force_acknowledgment = false)
+			message_queue.push(Message.new(text, force_acknowledgment))
 
 			true
 		end
@@ -25,13 +25,23 @@ module Roguelike
 
 		def display_messages
 			clear_messages
+			paused = false
 
 			row = 25
 			while row < 29 && (message = message_queue.shift) do
 				$window.attrset(Ncurses::COLOR_PAIR(8))
-				$window.mvaddstr(row, 0, message)
+				$window.mvaddstr(row, 0, message.text)
+
+				if message.force_acknowledgment || Game.over?
+					$window.addstr(" (paused)")
+					paused = true
+					until [10,13].include?($window.getch) do; end
+				end
+
 				row += 1
 			end
+
+			clear_messages if paused
 
 			# if !message_queue.empty?
 			# TODO: pause and allow for message reset; set the keyboard dispatcher into some sort of :message mode
@@ -75,11 +85,22 @@ module Roguelike
 					Game.player.move(0, -1)
 				when 57
 					Game.player.move(1, -1)
+				when 't'.ord
+					Game.player.teleport
 				else
-					message_queue.push("Pressed #{char}")
+					queue_message("Pressed #{char}")
 				end
 			end
 			Game.dungeon_level.draw
+		end
+
+		class Message
+			attr_reader :text, :force_acknowledgment
+
+			def initialize(text, force_acknowledgment)
+				@text                 = text
+				@force_acknowledgment = force_acknowledgment
+			end
 		end
 	end
 end

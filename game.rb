@@ -44,8 +44,10 @@ module Roguelike
 		end
 
 		def over!(message = nil)
-			@over        = true
-			@end_message = message
+			@over     = true
+			message ||= "Game over. Waah waah waah."
+
+			Dispatcher.queue_message(message, true)
 		end
 
 		def player=(player)
