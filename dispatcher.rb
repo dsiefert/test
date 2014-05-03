@@ -35,7 +35,7 @@ module Roguelike
 				if message.force_acknowledgment || Game.over?
 					$window.addstr(" (paused)")
 					paused = true
-					until [10,13].include?($window.getch) do; end
+					until [10,13,27,32].include?($window.getch) do; end
 				end
 
 				row += 1
@@ -59,7 +59,7 @@ module Roguelike
 			x_min = Game.dungeon_level.offset_x
 			y_min = Game.dungeon_level.offset_y
 			x_max = Game.dungeon_level.columns - 1 + Game.dungeon_level.offset_x
-			y_max = Game.dungeon_level.columns - 1 + Game.dungeon_level.offset_y
+			y_max = Game.dungeon_level.rows - 1 + Game.dungeon_level.offset_y
 			
 			done = false
 			while char = $window.getch
@@ -84,7 +84,7 @@ module Roguelike
 				when "9"
 					coord_x += 1
 					coord_y -= 1
-				when 10.chr, 13.chr
+				when 10.chr, 13.chr, 32.chr
 					done = true
 				when 27.chr
 					done = true
