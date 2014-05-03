@@ -288,12 +288,14 @@ module Roguelike
 					i = Item.new(self, *random_walkable_square, "butt", "B", 8)
 					i.set_tread { Dispatcher.queue_message("Don't step on me, motherfucker!") }
 					@items << i
-					i = Item.new(self, *random_walkable_square, "gallows", "%", 4)
+					i = Item.new(self, *random_walkable_square, "angry tile", "*", 4)
 					i.set_tread do
-						Dispatcher.queue_message("You a dead motherfucker now!", true)
+						Dispatcher.queue_message("You step on an extremely angry floor tile.")
+						Dispatcher.queue_message("\"You a dead motherfucker now!\" it screams.", true)
 						i.color = 2
 						i.set_tread do
-							Dispatcher.queue_message("I told you you was dead, motherfucker!")
+							Dispatcher.queue_message("You step on the angry floor tile again.")
+							Dispatcher.queue_message("\"I told you you was dead, motherfucker!\"")
 							Game.over!
 						end
 					end
