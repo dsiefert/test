@@ -16,11 +16,12 @@ module Roguelike
 		#
 		# probably has random dungeon map
 
-		ROOM_RATIO    = 0.28
-		LOOP_RATIO    = 0.10
-		ROOM_ATTEMPTS = 500
-		COLUMNS       = 78
-		ROWS          = 23
+		ROOM_RATIO_HIGH = 0.30
+		ROOM_RATIO_LOW  = 0.20
+		LOOP_RATIO      = 0.10
+		ROOM_ATTEMPTS   = 500
+		COLUMNS         = 78
+		ROWS            = 23
 
 		attr_reader :columns, :rows, :rooms, :corridors, :offset_y, :offset_x, :map_attempts
 
@@ -217,6 +218,8 @@ module Roguelike
 				end
 			end
 
+			room_ratio = Random.rand(ROOM_RATIO_LOW .. ROOM_RATIO_HIGH)
+
 			@map_attempts += 1
 
 			# start by adding a room
@@ -255,7 +258,7 @@ module Roguelike
 					room.pop_join
 				end
 
-				if (room_area / (rows * columns).to_f) > ROOM_RATIO
+				if (room_area / (rows * columns).to_f) > room_ratio
 					# make some tiles -- iterate over rows, then each value within each row
 					rows.times do |y|
 						columns.times do |x|
