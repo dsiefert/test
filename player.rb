@@ -4,7 +4,19 @@ module Roguelike
 			6
 		end
 
+		def initialize(*args)
+			super(*args)
+
+			@character = "@"
+			@color = 16
+		end
+
+		# we got the moves
+		# TODO: move this into a separate module because there's gonna be a lot of them
+
 		def move(x_direction, y_direction)
+			Event.new("leave", self)
+
 			new_x = @x + x_direction
 			new_y = @y + y_direction
 
@@ -24,18 +36,30 @@ module Roguelike
 			Event.new("move", self)
 		end
 
-		def teleport
-			@x, @y = Game.dungeon_level.random_walkable_square
+		def teleport(x = nil, y = nil)
+			if x.nil?
+				x, y = Game.dungeon_level.random_walkable_square
+			elsif y.nil?
+				x, y = x
+			end
+
+			return teleport unless Game.dungeon_level.walkable?(x, y)
+
+			@x, @y = x, y
+			Dispatcher.queue_message("You teleport!")
 
 			Event.new("move", self)
-			Dispatcher.queue_message("You teleport!", true)
+			Event.new("teleport", self)
 		end
 
-		def initialize(*args)
-			super(*args)
+		def controlled_teleport
+			x, y = Dispatcher.select_square
+			unless Game.dungeon_level.walkable?(x, y)
+				Dispatcher.queue_message("Controlled teleportation fail!")
+				x, y = Game.dungeon_level.random_walkable_square
+			end
 
-			@character = "@"
-			@color = 16
+			teleport(x, y)
 		end
 	end
 end

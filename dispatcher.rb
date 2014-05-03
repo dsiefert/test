@@ -47,6 +47,66 @@ module Roguelike
 			# TODO: pause and allow for message reset; set the keyboard dispatcher into some sort of :message mode
 		end
 
+		def select_square
+			queue_message("Select a location")
+			display_messages
+
+			coord_x = Game.player.x + Game.dungeon_level.offset_x
+			coord_y = Game.player.y + Game.dungeon_level.offset_y
+
+			$window.move(coord_y, coord_x)
+
+			x_min = Game.dungeon_level.offset_x
+			y_min = Game.dungeon_level.offset_y
+			x_max = Game.dungeon_level.columns - 1 + Game.dungeon_level.offset_x
+			y_max = Game.dungeon_level.columns - 1 + Game.dungeon_level.offset_y
+			
+			done = false
+			while char = $window.getch
+				case char.chr
+				when "1"
+					coord_x -= 1
+					coord_y += 1
+				when "2"
+					coord_y += 1
+				when "3"
+					coord_x += 1
+					coord_y += 1
+				when "4"
+					coord_x -= 1
+				when "6"
+					coord_x += 1
+				when "7"
+					coord_x -= 1
+					coord_y -= 1
+				when "8"
+					coord_y -= 1
+				when "9"
+					coord_x += 1
+					coord_y -= 1
+				when 10.chr, 13.chr
+					done = true
+				when 27.chr
+					done = true
+					coord_x, coord_y = [0, 0] # force it to choose a random character
+				end
+				
+				coord_x = [x_min, coord_x].max
+				coord_x = [x_max, coord_x].min
+				coord_y = [y_min, coord_y].max
+				coord_y = [y_max, coord_y].min
+				
+				$window.move(coord_y, coord_x)
+
+				break if done
+			end
+
+			coord_x -= Game.dungeon_level.offset_x
+			coord_y -= Game.dungeon_level.offset_y
+
+			[coord_x, coord_y]
+		end
+
 		def handle(char)
 			if char == 27
 				$window.nodelay(true)
@@ -55,38 +115,40 @@ module Roguelike
 				if char == -1
 					Game.over!
 				else
-					message_queue.push("Pressed 27+#{char}")
+					queue_message("Pressed 27+#{char}")
 				end
 
 				if char == 91
 					char_2 = $window.getch
-					message_queue.push("Then pressed #{char_2}")
+					queue_message("Then pressed #{char_2}")
 				end
 
 				$window.nodelay(false)
 			else
 				# normal key pressed
-				case char
-				when 49
+				case char.chr
+				when "1"
 					Game.player.move(-1, 1)
-				when 50
+				when "2"
 					Game.player.move(0, 1)
-				when 51
+				when "3"
 					Game.player.move(1, 1)
-				when 52
+				when "4"
 					Game.player.move(-1, 0)
-				when 53
+				when "5"
 					Game.player.move(0, 0)
-				when 54
+				when "6"
 					Game.player.move(1, 0)
-				when 55
+				when "7"
 					Game.player.move(-1, -1)
-				when 56
+				when "8"
 					Game.player.move(0, -1)
-				when 57
+				when "9"
 					Game.player.move(1, -1)
-				when 't'.ord
+				when 't'
 					Game.player.teleport
+				when 'T'
+					Game.player.controlled_teleport
 				else
 					queue_message("Pressed #{char}")
 				end
