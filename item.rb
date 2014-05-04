@@ -8,7 +8,9 @@ module Roguelike
 
 			@name, @character, @color = name, character, color
 
-			set_tread { Dispatcher.queue_message("You stepped on a #{@name}") }
+			map.add_movable(self)
+
+			set_tread { Dispatcher.queue_message("You step on a #{@name}") }
 		end
 
 		def set_tread(&block)
@@ -19,6 +21,10 @@ module Roguelike
 		def tread(target)
 			# TODO: some of that good ol' Ruby metaprogramming magic would make defining events easier
 			@tread.call(target)
+		end
+
+		def walkable?
+			true
 		end
 	end
 end

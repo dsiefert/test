@@ -4,6 +4,7 @@ module Roguelike
 	require_relative 'point'
 	require_relative 'tile'
 	require_relative 'item'
+	require_relative 'monster'
 	require_relative 'fov'
 
 	class DungeonLevel
@@ -34,7 +35,7 @@ module Roguelike
 			@title          = title.slice(0, 72)
 			@rooms          = []
 			@corridors      = []
-			@items          = []
+			@movables       = []
 			@map_attempts   = 0
 
 			@tiles = []
@@ -85,7 +86,9 @@ module Roguelike
 			$window.mvaddstr(@offset_y - 1, 3, " #{@title} ")
 
 			#items!
-			@items.each { |item| item.draw if square(item.x, item.y).visible? || square(item.x, item.y).remembered? }
+			@movables.each do |movable|
+				movable.draw if square(movable.x, movable.y).visible? || square(movable.x, movable.y).remembered?
+			end
 
 			Game.player.draw
 
@@ -172,6 +175,10 @@ module Roguelike
 			val
 		end
 
+		def add_movable(movable)
+			@movables << movable
+		end
+
 	private
 
 		def random_row(range = nil)
@@ -208,10 +215,10 @@ module Roguelike
 
 		def create_map
 			# wipe the map in case this isn't the first go-round
-			@rooms = []
+			@rooms     = []
 			@corridors = []
-			@tiles = []
-			@items = []
+			@tiles     = []
+			@movables  = []
 			@columns.times do |x|
 				@tiles[x] = []
 				@rows.times do |y|
@@ -282,12 +289,11 @@ module Roguelike
 					end
 
 					# populate the map with critters, toys, and staircases
-					@items << Item.new(self, *random_walkable_square, "ampersand", "&", 12)
-					@items << Item.new(self, *random_walkable_square, "diamond", "^", 5)
-					@items << Item.new(self, *random_walkable_square, "penis", "P", 2)
+					Item.new(self, *random_walkable_square, "ampersand", "&", 12)
+					Item.new(self, *random_walkable_square, "diamond", "^", 5)
+					Item.new(self, *random_walkable_square, "penis", "P", 2)
 					i = Item.new(self, *random_walkable_square, "butt", "B", 8)
 					i.set_tread { Dispatcher.queue_message("Don't step on me, motherfucker!") }
-					@items << i
 					i = Item.new(self, *random_walkable_square, "angry tile", "*", 4)
 					i.set_tread do
 						Dispatcher.queue_message("You step on an extremely angry floor tile.")
@@ -299,7 +305,10 @@ module Roguelike
 							Game.over!
 						end
 					end
-					@items << i
+					m = Monster.new(self, *random_walkable_square, "purple wanderer", "@", 6)
+					m.set_turn do
+						m.move
+					end
 
 					# trigger event
 					return Event.new("create-complete", self)
