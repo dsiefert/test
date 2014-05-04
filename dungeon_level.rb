@@ -114,8 +114,23 @@ module Roguelike
 			tile_type(x, y) == false
 		end
 
-		def walkable?(x, y)
-			return false if x.nil? || y.nil?
+		def walkable?(x, y = nil)
+			return false if x.nil?
+			x, y = x if y.nil?
+
+			return false if Game.player && x == Game.player.x && y == Game.player.y
+
+			walkable_except_player?(x, y)
+		end
+
+		def walkable_except_player?(x, y = nil)
+			return false if x.nil?
+			x, y = x if y.nil?
+
+			@movables.each do |movable|
+				next if movable.walkable?
+				return false if movable.x == x && movable.y == y
+			end
 
 			!square(x, y).transit_time.nil?
 		end
