@@ -7,10 +7,19 @@ module Roguelike
 		attr_reader :event_name, :target, :time, :offset
 
 		def self.listen(name, listener, callback = nil, target = nil, &block)
-			# first remove any existing listeners by the same object for the same event
-			@@listeners -= @@listeners.select { |l| l.name == name && l.listener == listener }
+			# first remove any existing listeners by the same object for the same event on the same target
+			ignore(name, listener, target)
+			@@listeners -= @@listeners.select { |l| l.name == name && l.listener == listener && l.target == target }
 
 			@@listeners << EventListener.new(name, listener, callback || name.to_sym, target, &block)
+		end
+
+		def self.ignore(name, listener, target = nil)
+			@@listeners -= @@listeners.select do |l|
+				l.name == name &&
+				l.listener == listener &&
+				l.target == target
+			end
 		end
 
 		def self.summary
@@ -31,7 +40,7 @@ module Roguelike
 	end
 
 	class EventListener
-		attr_reader :name, :listener
+		attr_reader :name, :listener, :target
 
 		def initialize(name, listener, callback, target, &block)
 			@name     = name
@@ -42,7 +51,7 @@ module Roguelike
 		end
 
 		def alert(target)
-			@listener.send(@callback, target) if (!@block || @block.call) && (@target.nil? || @target == target)
+			@listener.send(@callback, target) if (!@block || @block.call) && (@target.nil? || @target === target)
 		end
 	end
 end
