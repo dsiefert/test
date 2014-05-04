@@ -153,7 +153,6 @@ module Roguelike
 					queue_message("Pressed #{char}")
 				end
 			end
-			Game.dungeon_level.draw
 		end
 
 		class Message

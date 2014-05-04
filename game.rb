@@ -36,6 +36,8 @@ module Roguelike
 		end
 
 		def take_turn
+			Event.new("turn", self)
+			Game.dungeon_level.draw
 			Dispatcher.handle($window.getch)
 		end
 
