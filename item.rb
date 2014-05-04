@@ -1,5 +1,7 @@
 module Roguelike
 	class Item < Point
+		include EventCapable
+
 		attr_reader :name
 		attr_accessor :color
 

@@ -1,5 +1,6 @@
-require_relative 'dungeon'
 require_relative 'event'
+require_relative 'event_capable'
+require_relative 'dungeon'
 require_relative 'dispatcher'
 require_relative 'player'
 
