@@ -7,6 +7,9 @@ module Roguelike
 		#
 		# TODO: Handle local events a bit more cleanly, with an options hash {:local => [x, y]}
 		# Other options may yield themselves with time.
+		#
+		# TODO: **IMPORTANT** Figure out a way to register multiple event handler methods on an
+		# object that listens for the same event on multiple types.
 
 		@@log       = []
 		@@summary   = []

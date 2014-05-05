@@ -6,6 +6,9 @@
 # Induce our purple wandering Canadian to chase the player under some circumstance
 # Introduce monsters emitting actions
 # See if we can get the angry floor tile to eat him
+# Will need to establish different event handlers for the same event name (but different
+# targets/senders) in order to make the angry tile handle the Canadian differently from the
+# player.
 
 require 'ncursesw'
 require_relative 'game'
