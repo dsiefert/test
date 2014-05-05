@@ -88,7 +88,10 @@ module Roguelike
 			#items!
 			@movables.each do |movable|
 				# TODO: Ensure monsters always draw after items
-				movable.draw if square(movable.x, movable.y).visible? || (movable.is_a?(Item) && square(movable.x, movable.y).remembered?)
+				if square(movable.x, movable.y).visible? || (movable.is_a?(Item) && square(movable.x, movable.y).remembered?)
+					Event.new(:see, Game.player, target: movable) if square(movable.x, movable.y).visible?
+					movable.draw
+				end
 			end
 
 			Game.player.draw
@@ -357,6 +360,10 @@ module Roguelike
 						end
 						.listen_for(:bump, Game.player) do
 							Dispatcher.queue_message("You bump into a Canadian. The Canadian looks up in surprise. \"Oh, I'm dreadfully sorry!\" he says.")
+						end
+						.listen_for(:see, Game.player) do |me|
+							me.ignore(:see)
+							Dispatcher.queue_message("You see a Canadian muttering to himself and pacing.", true)
 						end
 
 					# trigger event

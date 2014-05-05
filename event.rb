@@ -54,6 +54,10 @@ module Roguelike
 				if (coords = options.delete(:local))
 					listeners.select!{ |l| Game.dungeon_level.movables(coords).include?(l.listener) }
 				end
+
+				if (target = options.delete(:target))
+					listeners.select!{ |l| l.listener == target }
+				end
 			end
 
 			listeners.map { |l| l.alert(sender) if l.name == event_name }
