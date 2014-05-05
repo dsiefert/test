@@ -49,6 +49,16 @@ module Roguelike
 			@remembered = true
 		end
 
+		def reveal
+			return light if !transit_time.nil?
+
+			(-1 .. 1).each do |x|
+				(-1 .. 1).each do |y|
+					return light if !@map.square(@x + x, @y + y).transit_time.nil?
+				end
+			end
+		end
+
 		def forget
 			@remembered = false
 		end
@@ -64,6 +74,7 @@ module Roguelike
 		end
 
 		def light; end
+		def reveal; end
 		def draw; end
 		def reinitialize_fov; end
 
@@ -77,6 +88,10 @@ module Roguelike
 
 		def opaque?
 			true
+		end
+
+		def transit_time
+			nil
 		end
 	end
 end
