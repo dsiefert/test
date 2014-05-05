@@ -87,7 +87,7 @@ module Roguelike
 
 			#items!
 			@movables.each do |movable|
-				movable.draw if square(movable.x, movable.y).visible? || square(movable.x, movable.y).remembered?
+				movable.draw if square(movable.x, movable.y).visible? || (movable.is_a?(Item) && square(movable.x, movable.y).remembered?)
 			end
 
 			Game.player.draw
