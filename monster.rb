@@ -1,5 +1,8 @@
 module Roguelike
 	class Monster < Point
+		# TODO: method to capture whether or not the thing has been seen before, which will
+		# among other things indicate whether to use 'the' or 'a' in reference to it
+		
 		include EventCapable
 		
 		attr_reader :name
