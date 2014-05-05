@@ -14,11 +14,15 @@ module Roguelike
 		end
 
 		def self.ignore(name, listener, target = nil)
-			@@listeners -= @@listeners.select do |l|
+			@@listeners.reject! do |l|
 				l.name == name &&
 				l.listener == listener &&
 				l.target == target
 			end
+		end
+
+		def self.ignore_all_for_object(listener)
+			@@listeners.reject! { |l| l.listener == listener }
 		end
 
 		def self.summary
