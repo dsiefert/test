@@ -13,16 +13,6 @@ module Roguelike
 			map.add_movable(self)
 		end
 
-		def set_turn(&block)
-			@turn = block
-			Event.listen("turn", self)
-		end
-
-		def turn(target)
-			# TODO: some of that good ol' Ruby metaprogramming magic would make defining events easier
-			@turn.call(target)
-		end
-
 		def walkable?
 			false
 		end
@@ -32,8 +22,9 @@ module Roguelike
 			# if one exists
 
 			if x.nil?
-				x = [-1, 1].sample
-				y = [-1, 1].sample
+				x = [-1, 0, 1].sample
+				y = [-1, 0, 1].sample
+				return move if (x == 0 && y == 0)
 			end
 			x, y = x if y.nil?
 
