@@ -38,7 +38,7 @@ module Roguelike
 		end
 
 		def initialize(event_name, target, *args)
-			@event_name = event_name
+			@event_name = event_name.to_sym
 			@target = target
 			@time = Time.now
 			@offset = @@log.last ? Time.now - @@log.last.time : 0.0

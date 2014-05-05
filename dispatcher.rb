@@ -10,7 +10,7 @@ module Roguelike
 		end
 
 		def queue_message(text, force_acknowledgment = false)
-			message_queue.push(Message.new(text, force_acknowledgment))
+			message_queue << Message.new(text, force_acknowledgment)
 
 			true
 		end
@@ -29,6 +29,8 @@ module Roguelike
 
 			row = 25
 			while row < 29 && (message = message_queue.shift) do
+				message_log << message
+
 				$window.attrset(Ncurses::COLOR_PAIR(8))
 				$window.mvaddstr(row, 0, message.text)
 

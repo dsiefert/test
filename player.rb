@@ -54,8 +54,8 @@ module Roguelike
 			@x, @y = x, y
 			Dispatcher.queue_message("You teleport!")
 
-			Event.new("move", self)
-			Event.new("teleport", self)
+			Event.new(:tread, self, :local, x, y)
+			Event.new(:teleport, self)
 		end
 
 		def controlled_teleport
