@@ -7,6 +7,10 @@ module Roguelike
 		# 	maybe by means of a 'see' event the player passes the monster whenever the monster
 		# 	is drawn (i.e. when it's visible?)
 
+		# TODO: methods to get different versions of the name, at least with:
+		# varying plurality and definiteness
+		# 	the Canadian, a Canadian, some Canadians, the Canadians
+
 		include EventCapable
 		
 		attr_reader :name

@@ -1,5 +1,8 @@
 module Roguelike
 	module EventCapable
+		# FIXME: the rug has been shouting at the Canadian, even though it's supposed to only
+		# listen for the player.
+
 		def listen_for(event, sender = nil, &block)
 			event = event.to_sym
 			raise ArgumentError, "You must give a block when setting up an event listener" unless block_given?
