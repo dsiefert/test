@@ -31,14 +31,14 @@ module Roguelike
 
 			if !Game.dungeon_level.walkable?(new_x, new_y)
 				Dispatcher.queue_message("Ouch, you bumped into a wall!") if Game.dungeon_level.square(new_x, new_y).transit_time.nil?
-				Event.new(:bump, self, :local, new_x, new_y)
+				Event.new(:bump, self, local: [new_x, new_y])
 				return false
 			end
 
 			@x = new_x
 			@y = new_y
 
-			Event.new(:tread, self, :local, x, y)
+			Event.new(:tread, self, local: [x, y])
 			Event.new(:move, self)
 		end
 
@@ -54,7 +54,7 @@ module Roguelike
 			@x, @y = x, y
 			Dispatcher.queue_message("You teleport!")
 
-			Event.new(:tread, self, :local, x, y)
+			Event.new(:tread, self, local: [x, y])
 			Event.new(:teleport, self)
 		end
 

@@ -40,7 +40,7 @@ module Roguelike
 			@@summary
 		end
 
-		def initialize(event_name, sender, *args)
+		def initialize(event_name, sender, options = {})
 			@event_name = event_name.to_sym
 			@sender = sender
 			@time = Time.now
@@ -50,9 +50,9 @@ module Roguelike
 			@@summary.push("#{event_name}, by #{sender.class} (#{sender.object_id}) at #{@time} (#{@offset})")
 
 			listeners = @@listeners.dup
-			if !args.empty?
-				if args.first == :local
-					listeners.select!{ |l| Game.dungeon_level.movables(args[1], args[2]).include?(l.listener) }
+			if !options.empty?
+				if (coords = options.delete(:local))
+					listeners.select!{ |l| Game.dungeon_level.movables(coords).include?(l.listener) }
 				end
 			end
 
