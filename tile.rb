@@ -54,7 +54,7 @@ module Roguelike
 
 			(-1 .. 1).each do |x|
 				(-1 .. 1).each do |y|
-					return light if !@map.square(@x + x, @y + y).transit_time.nil?
+					return light if @map.square(@x + x, @y + y).transit_time
 				end
 			end
 		end
