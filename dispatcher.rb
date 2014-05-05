@@ -154,12 +154,7 @@ module Roguelike
 				when 's'
 					Game.player.sneeze
 				when 'r'
-					Game.dungeon_level.columns.times do |x|
-						Game.dungeon_level.rows.times do |y|
-							Game.dungeon_level.square(x, y).reveal
-						end
-					end
-					Game.dungeon_level.draw
+					Game.dungeon_level.reveal
 				else
 					queue_message("Pressed #{char}")
 				end

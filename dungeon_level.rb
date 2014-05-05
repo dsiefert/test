@@ -205,6 +205,14 @@ module Roguelike
 			@movables -= [movable]
 		end
 
+		def reveal
+			columns.times do |x|
+				rows.times do |y|
+					square(x, y).reveal
+				end
+			end
+		end
+
 	private
 
 		def random_row(range = nil)
