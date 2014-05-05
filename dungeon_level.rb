@@ -323,12 +323,12 @@ module Roguelike
 					end
 
 					# populate the map with critters, toys, and staircases
-					Item.new(self, *random_walkable_square, "ampersand", "&", 12).listen_for(:tread, Game.player) do |sender, me|
+					Item.new(self, *random_walkable_square, "ampersand", "&", 12).listen_for(:tread, Game.player) do |me|
 						Dispatcher.queue_message("You step on an ampersand, squishing it flat!")
 						me.remove
 					end
 					Item.new(self, *random_walkable_square, "diamond", "^", 5)
-					Item.new(self, *random_walkable_square, "dildo", "/", 2).listen_for(:tread, Game.player) do |sender, me|
+					Item.new(self, *random_walkable_square, "dildo", "/", 2).listen_for(:tread, Game.player) do |me|
 						Dispatcher.queue_message("The big red dildo squeaks hopefully.")
 						me.listen_for(:sneeze, Game.player) { Dispatcher.queue_message("The big red dildo shouts, \"Bless you!\"") }
 						me.listen_for(:tread, Game.player) do
@@ -338,9 +338,9 @@ module Roguelike
 						end
 					end
 					Item.new(self, *random_walkable_square, "rug", "O", 8).listen_for(:tread, Game.player) do
-						Dispatcher.queue_message("Don't step on me, motherfucker!")
+						Dispatcher.queue_message("The rug shouts, \"Don't step on me, motherfucker!\"")
 					end
-					Item.new(self, *random_walkable_square, "angry tile", "*", 4).listen_for(:tread, Game.player) do |player, me|
+					Item.new(self, *random_walkable_square, "angry tile", "*", 4).listen_for(:tread, Game.player) do |me|
 						Dispatcher.queue_message("You step on an extremely angry floor tile.")
 						Dispatcher.queue_message("\"You a dead motherfucker now!\" it screams.", true)
 						me.color = 2
@@ -352,10 +352,10 @@ module Roguelike
 						end
 					end
 					Monster.new(self, *random_walkable_square, "Canadian", "@", 6)
-						.listen_for(:turn) do |game, me|
+						.listen_for(:turn) do |me|
 							me.move
 						end
-						.listen_for(:bump, Game.player) do |player, me|
+						.listen_for(:bump, Game.player) do
 							Dispatcher.queue_message("You bump into a Canadian. The Canadian looks up in surprise. \"Oh, I'm dreadfully sorry!\" he says.")
 						end
 

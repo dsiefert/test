@@ -15,20 +15,20 @@ module Roguelike
 		@@summary   = []
 		@@listeners = []
 
-		attr_reader :event_name, :target, :time, :offset
+		attr_reader :event_name, :sender, :time, :offset
 
-		def self.listen(name, listener, callback = nil, target = nil, &block)
-			# first remove any existing listeners by the same object for the same event on the same target
-			ignore(name, listener, target)
+		def self.listen(name, listener, callback = nil, sender = nil, &block)
+			# first remove any existing listeners by the same object for the same event on the same sender
+			ignore(name, listener, sender)
 
-			@@listeners << EventListener.new(name, listener, callback || name.to_sym, target, &block)
+			@@listeners << EventListener.new(name, listener, callback || name.to_sym, sender, &block)
 		end
 
-		def self.ignore(name, listener, target = nil)
+		def self.ignore(name, listener, sender = nil)
 			@@listeners.reject! do |l|
 				l.name == name &&
 				l.listener == listener &&
-				(target.nil? || l.target.nil? || l.target == target)
+				(sender.nil? || l.sender.nil? || l.sender == sender)
 			end
 		end
 
@@ -40,14 +40,14 @@ module Roguelike
 			@@summary
 		end
 
-		def initialize(event_name, target, *args)
+		def initialize(event_name, sender, *args)
 			@event_name = event_name.to_sym
-			@target = target
+			@sender = sender
 			@time = Time.now
 			@offset = @@log.last ? Time.now - @@log.last.time : 0.0
 
 			@@log.push(self)
-			@@summary.push("#{event_name}, by #{target.class} (#{target.object_id}) at #{@time} (#{@offset})")
+			@@summary.push("#{event_name}, by #{sender.class} (#{sender.object_id}) at #{@time} (#{@offset})")
 
 			listeners = @@listeners.dup
 			if !args.empty?
@@ -56,23 +56,23 @@ module Roguelike
 				end
 			end
 
-			listeners.map { |l| l.alert(target) if l.name == event_name }
+			listeners.map { |l| l.alert(sender) if l.name == event_name }
 		end
 	end
 
 	class EventListener
-		attr_reader :name, :listener, :target
+		attr_reader :name, :listener, :sender
 
-		def initialize(name, listener, callback, target, &block)
+		def initialize(name, listener, callback, sender, &block)
 			@name     = name
 			@listener = listener
 			@callback = callback
-			@target   = target
+			@sender   = sender
 			@block    = block if block_given?
 		end
 
-		def alert(target)
-			@listener.send(@callback, target) if (!@block || @block.call) && (@target.nil? || @target === target)
+		def alert(sender)
+			@listener.send(@callback, sender) if (!@block || @block.call) && (@sender.nil? || @sender === sender)
 		end
 	end
 end
