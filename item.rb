@@ -20,5 +20,9 @@ module Roguelike
 		def walkable?
 			true
 		end
+
+		def remove
+			@map.remove_movable(self)
+		end
 	end
 end

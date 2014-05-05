@@ -200,6 +200,10 @@ module Roguelike
 			@movables << movable
 		end
 
+		def remove_movable(movable)
+			@movables -= [movable]
+		end
+
 	private
 
 		def random_row(range = nil)
