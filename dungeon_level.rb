@@ -347,6 +347,7 @@ module Roguelike
 						me.listen_for(:tread, Game.player) do
 							Dispatcher.queue_message("You step on the angry floor tile again.")
 							Dispatcher.queue_message("\"I told you you was dead, motherfucker!\"")
+							Dispatcher.queue_message("The tile crumbles and tentacles shoot out, wrapping around you.")
 							Game.over!
 						end
 					end
