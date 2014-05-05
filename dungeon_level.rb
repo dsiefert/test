@@ -312,8 +312,9 @@ module Roguelike
 					# populate the map with critters, toys, and staircases
 					Item.new(self, *random_walkable_square, "ampersand", "&", 12)
 					Item.new(self, *random_walkable_square, "diamond", "^", 5)
-					Item.new(self, *random_walkable_square, "dildo", "/", 2).listen_for(:sneeze) do
-						Dispatcher.queue_message("The big red dildo shouts, \"Bless you!\"")
+					Item.new(self, *random_walkable_square, "dildo", "/", 2).listen_for(:tread) do |sender, me|
+						Dispatcher.queue_message("The big red dildo squeaks hopefully.")
+						me.listen_for(:sneeze) { Dispatcher.queue_message("The big red dildo shouts, \"Bless you!\"") }
 					end
 					Item.new(self, *random_walkable_square, "butt", "B", 8).listen_for(:tread) do
 						Dispatcher.queue_message("Don't step on me, motherfucker!")
