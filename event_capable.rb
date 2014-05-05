@@ -13,10 +13,14 @@ module Roguelike
 			eigenclass.send(:define_method, "event_#{event}".to_sym) do |t|
 				block.call(t, self)
 			end
+
+			self
 		end
 
 		def ignore(event, target = nil)
 			Event.ignore(event, self, target)
+
+			self
 		end
 	end
 end

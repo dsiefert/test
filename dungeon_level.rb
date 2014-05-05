@@ -337,7 +337,7 @@ module Roguelike
 							me.ignore(:sneeze)
 						end
 					end
-					Item.new(self, *random_walkable_square, "butt", "B", 8).listen_for(:tread, Game.player) do
+					Item.new(self, *random_walkable_square, "rug", "O", 8).listen_for(:tread, Game.player) do
 						Dispatcher.queue_message("Don't step on me, motherfucker!")
 					end
 					Item.new(self, *random_walkable_square, "angry tile", "*", 4).listen_for(:tread, Game.player) do |player, me|
@@ -351,13 +351,13 @@ module Roguelike
 							Game.over!
 						end
 					end
-					m = Monster.new(self, *random_walkable_square, "Canadian", "@", 6)
-					m.listen_for(:turn) do
-						m.move
-					end
-					m.listen_for(:bump, Game.player) do |player, me|
-						Dispatcher.queue_message("You bump into a Canadian. The Canadian looks up in surprise. \"Oh, I'm dreadfully sorry!\" he says.")
-					end
+					Monster.new(self, *random_walkable_square, "Canadian", "@", 6)
+						.listen_for(:turn) do |game, me|
+							me.move
+						end
+						.listen_for(:bump, Game.player) do |player, me|
+							Dispatcher.queue_message("You bump into a Canadian. The Canadian looks up in surprise. \"Oh, I'm dreadfully sorry!\" he says.")
+						end
 
 					# trigger event
 					return Event.new(:create_complete, self)
