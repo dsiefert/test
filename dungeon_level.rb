@@ -345,6 +345,9 @@ module Roguelike
 					m.set_turn do
 						m.move
 					end
+					m.listen_for(:bump, Game.player) do |player, me|
+						Dispatcher.queue_message("The purple wanderer looks up in surprise. \"Oh, I'm dreadfully sorry!\" he says.")
+					end
 
 					# trigger event
 					return Event.new("create-complete", self)
