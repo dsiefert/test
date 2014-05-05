@@ -20,8 +20,7 @@ module Roguelike
 		def self.listen(name, listener, callback = nil, sender = nil, &block)
 			# first remove any existing listeners by the same object for the same event on the same sender
 			ignore(name, listener, sender)
-
-			@@listeners << EventListener.new(name, listener, callback || name.to_sym, sender, &block)
+			@@listeners << EventListener.new(name, listener, (callback || name.to_sym), sender, &block)
 		end
 
 		def self.ignore(name, listener, sender = nil)
@@ -76,7 +75,9 @@ module Roguelike
 		end
 
 		def alert(sender)
-			@listener.send(@callback, sender) if (!@block || @block.call) && (@sender.nil? || @sender === sender)
+			if (!@block || @block.call) && (@sender.nil? || @sender === sender)
+				@listener.send(@callback, sender)
+			end
 		end
 	end
 end

@@ -29,10 +29,10 @@ module Roguelike
 				"An undisclosed location"
 			]
 
+			Game.player = Player.new
 			dungeon_level = Roguelike::DungeonLevel.new(titles.sample)
 			Game.dungeon_level = dungeon_level
-			coord_x, coord_y = dungeon_level.random_walkable_square
-			Game.player = Player.new(dungeon_level, coord_x, coord_y)
+			Game.player.set_location(dungeon_level, dungeon_level.random_walkable_square)
 			dungeon_level.draw
 		end
 

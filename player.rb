@@ -6,11 +6,16 @@ module Roguelike
 			6
 		end
 
-		def initialize(*args)
-			super(*args)
-
+		def initialize
 			@character = "@"
 			@color = 16
+		end
+
+		def set_location(map, x, y = nil)
+			x, y = x unless y
+			
+			return false if @map || !map.is_a?(Roguelike::DungeonLevel)
+			@map, @x, @y = map, x, y
 		end
 
 		# we got the moves
