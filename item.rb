@@ -22,7 +22,7 @@ module Roguelike
 		end
 
 		def remove
-			Event.ignore_all_for_object(self)
+			Event.forget_object(self)
 			@map.remove_movable(self)
 		end
 	end

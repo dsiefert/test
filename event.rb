@@ -32,7 +32,7 @@ module Roguelike
 			end
 		end
 
-		def self.ignore_all_for_object(listener)
+		def self.forget_object(listener)
 			@@listeners.reject! { |l| l.listener == listener }
 		end
 
