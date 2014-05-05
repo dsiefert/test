@@ -87,6 +87,7 @@ module Roguelike
 
 			#items!
 			@movables.each do |movable|
+				# TODO: Ensure monsters always draw after items
 				movable.draw if square(movable.x, movable.y).visible? || (movable.is_a?(Item) && square(movable.x, movable.y).remembered?)
 			end
 
@@ -342,11 +343,11 @@ module Roguelike
 						end
 					end
 					m = Monster.new(self, *random_walkable_square, "Canadian", "@", 6)
-					m.set_turn do
+					m.listen_for(:turn) do
 						m.move
 					end
 					m.listen_for(:bump, Game.player) do |player, me|
-						Dispatcher.queue_message("The purple wanderer looks up in surprise. \"Oh, I'm dreadfully sorry!\" he says.")
+						Dispatcher.queue_message("You bump into a Canadian. The Canadian looks up in surprise. \"Oh, I'm dreadfully sorry!\" he says.")
 					end
 
 					# trigger event
