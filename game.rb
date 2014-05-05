@@ -47,7 +47,10 @@ module Roguelike
 		end
 
 		def over!(message = nil)
-			@over     = true
+			@over = true
+
+			dungeon_level.draw(false)
+
 			message ||= "Game over. Waah waah waah."
 
 			Dispatcher.queue_message(message, true)

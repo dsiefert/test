@@ -52,7 +52,7 @@ module Roguelike
 			create_map if has_random_map
 		end
 
-		def draw
+		def draw(display_messages = true)
 			calculate_fov
 
 			# clear what's there
@@ -93,7 +93,7 @@ module Roguelike
 
 			Game.player.draw
 
-			Dispatcher.display_messages
+			Dispatcher.display_messages if display_messages
 
 			# set the cursor to the player's current position
 			$window.move(Game.player.y + offset_y, Game.player.x + offset_x)
