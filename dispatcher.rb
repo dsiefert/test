@@ -149,6 +149,8 @@ module Roguelike
 					Game.player.teleport
 				when 'T'
 					Game.player.controlled_teleport
+				when 's'
+					Game.player.sneeze
 				else
 					queue_message("Pressed #{char}")
 				end

@@ -147,6 +147,12 @@ module Roguelike
 			[x, y]
 		end
 
+		def movables(x, y = nil)
+			x, y = x unless y
+
+			@movables.select{ |m| m.x == x && m.y == y }
+		end
+
 		def square(x, y = nil)
 			x, y = x unless y
 
@@ -306,15 +312,17 @@ module Roguelike
 					# populate the map with critters, toys, and staircases
 					Item.new(self, *random_walkable_square, "ampersand", "&", 12)
 					Item.new(self, *random_walkable_square, "diamond", "^", 5)
-					Item.new(self, *random_walkable_square, "penis", "P", 2)
-					i = Item.new(self, *random_walkable_square, "butt", "B", 8)
-					i.set_tread { Dispatcher.queue_message("Don't step on me, motherfucker!") }
-					i = Item.new(self, *random_walkable_square, "angry tile", "*", 4)
-					i.set_tread do
+					Item.new(self, *random_walkable_square, "dildo", "/", 2).listen_for(:sneeze) do
+						Dispatcher.queue_message("The big red dildo shouts, \"Bless you!\"")
+					end
+					Item.new(self, *random_walkable_square, "butt", "B", 8).listen_for(:tread) do
+						Dispatcher.queue_message("Don't step on me, motherfucker!")
+					end
+					Item.new(self, *random_walkable_square, "angry tile", "*", 4).listen_for(:tread) do |player, me|
 						Dispatcher.queue_message("You step on an extremely angry floor tile.")
 						Dispatcher.queue_message("\"You a dead motherfucker now!\" it screams.", true)
-						i.color = 2
-						i.set_tread do
+						me.color = 2
+						me.listen_for(:tread) do
 							Dispatcher.queue_message("You step on the angry floor tile again.")
 							Dispatcher.queue_message("\"I told you you was dead, motherfucker!\"")
 							Game.over!

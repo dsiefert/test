@@ -9,7 +9,6 @@ module Roguelike
 		def self.listen(name, listener, callback = nil, target = nil, &block)
 			# first remove any existing listeners by the same object for the same event on the same target
 			ignore(name, listener, target)
-			@@listeners -= @@listeners.select { |l| l.name == name && l.listener == listener && l.target == target }
 
 			@@listeners << EventListener.new(name, listener, callback || name.to_sym, target, &block)
 		end
@@ -26,7 +25,11 @@ module Roguelike
 			@@summary
 		end
 
-		def initialize(event_name, target)
+		def initialize(event_name, target, *args)
+			# TODO/FIXME: event triggerer needs to be able to specify whether an event is local or not
+			# Local events only are sent to listeners at a specified location
+			# Nonlocal events are sent to everyone on the dungeon_level
+
 			@event_name = event_name
 			@target = target
 			@time = Time.now
@@ -35,7 +38,14 @@ module Roguelike
 			@@log.push(self)
 			@@summary.push("#{event_name}, by #{target.class} (#{target.object_id}) at #{@time} (#{@offset})")
 
-			@@listeners.map { |l| l.alert(target) if l.name == event_name }
+			listeners = @@listeners.dup
+			if !args.empty?
+				if args.first == :local
+					listeners.select!{ |l| Game.dungeon_level.movables(args[1], args[2]).include?(l.listener) }
+				end
+			end
+
+			listeners.map { |l| l.alert(target) if l.name == event_name }
 		end
 	end
 

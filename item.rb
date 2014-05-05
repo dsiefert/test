@@ -12,17 +12,9 @@ module Roguelike
 
 			map.add_movable(self)
 
-			set_tread { Dispatcher.queue_message("You step on a #{@name}") }
-		end
+			listen_for(:tread, Game.player) { Dispatcher.queue_message("You step on a #{name}!") }
 
-		def set_tread(&block)
-			@tread = block
-			Event.listen("move", self, :tread, Game.player) { Game.player.location == location }
-		end
-
-		def tread(target)
-			# TODO: some of that good ol' Ruby metaprogramming magic would make defining events easier
-			@tread.call(target)
+			self
 		end
 
 		def walkable?

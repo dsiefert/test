@@ -37,7 +37,8 @@ module Roguelike
 			@x = new_x
 			@y = new_y
 
-			Event.new("move", self)
+			Event.new(:tread, self, :local, x, y)
+			Event.new(:move, self)
 		end
 
 		def teleport(x = nil, y = nil)
@@ -64,6 +65,11 @@ module Roguelike
 			end
 
 			teleport(x, y)
+		end
+
+		def sneeze
+			Dispatcher.queue_message("You sneeze.")
+			Event.new(:sneeze, self)
 		end
 	end
 end
