@@ -1,5 +1,8 @@
 module Roguelike
 	class Event
+		# TODO: Clean these up so they only work on the currently-loaded map. No triggering events
+		# on maps that aren't displayed.
+
 		@@log       = []
 		@@summary   = []
 		@@listeners = []
@@ -30,10 +33,6 @@ module Roguelike
 		end
 
 		def initialize(event_name, target, *args)
-			# TODO/FIXME: event triggerer needs to be able to specify whether an event is local or not
-			# Local events only are sent to listeners at a specified location
-			# Nonlocal events are sent to everyone on the dungeon_level
-
 			@event_name = event_name
 			@target = target
 			@time = Time.now
