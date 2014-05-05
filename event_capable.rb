@@ -14,5 +14,9 @@ module Roguelike
 				block.call(t, self)
 			end
 		end
+
+		def ignore(event, target = nil)
+			Event.ignore(event, self, target)
+		end
 	end
 end
