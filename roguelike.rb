@@ -1,4 +1,12 @@
 #!/home/damon/.rbenv/shims/ruby
+
+# TODO, for fun:
+# Work out some concept of establishing 'clear' (walkable) directions for player & monsters
+# Set monster walk mode: :wander, :chase, :flee
+# Induce our purple wandering Canadian to chase the player under some circumstance
+# Introduce monsters emitting actions
+# See if we can get the angry floor tile to eat him
+
 require 'ncursesw'
 require_relative 'game'
 

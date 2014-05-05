@@ -27,7 +27,7 @@ module Roguelike
 		attr_reader :columns, :rows, :rooms, :corridors, :offset_y, :offset_x, :map_attempts
 
 		def initialize(title = "A mysterious dungeon", has_random_map = true)
-			Event.new("initialize", self)
+			Event.new(:initialize, self)
 
 			@columns        = COLUMNS
 			@rows           = ROWS
@@ -99,7 +99,7 @@ module Roguelike
 
 			# all done!
 			$window.refresh
-			Event.new("draw-complete", self)
+			Event.new(:draw_complete, self)
 		end
 
 		def upstairs
@@ -314,34 +314,34 @@ module Roguelike
 					end
 
 					# populate the map with critters, toys, and staircases
-					Item.new(self, *random_walkable_square, "ampersand", "&", 12).listen_for(:tread) do |sender, me|
+					Item.new(self, *random_walkable_square, "ampersand", "&", 12).listen_for(:tread, Game.player) do |sender, me|
 						Dispatcher.queue_message("You step on an ampersand, squishing it flat!")
 						me.remove
 					end
 					Item.new(self, *random_walkable_square, "diamond", "^", 5)
-					Item.new(self, *random_walkable_square, "dildo", "/", 2).listen_for(:tread) do |sender, me|
+					Item.new(self, *random_walkable_square, "dildo", "/", 2).listen_for(:tread, Game.player) do |sender, me|
 						Dispatcher.queue_message("The big red dildo squeaks hopefully.")
-						me.listen_for(:sneeze) { Dispatcher.queue_message("The big red dildo shouts, \"Bless you!\"") }
-						me.listen_for(:tread) do
-							Dispatcher.queue_message("The big red dildo squeals sadly")
+						me.listen_for(:sneeze, Game.player) { Dispatcher.queue_message("The big red dildo shouts, \"Bless you!\"") }
+						me.listen_for(:tread, Game.player) do
+							Dispatcher.queue_message("The big red dildo squeals sadly.")
 							me.ignore(:tread)
 							me.ignore(:sneeze)
 						end
 					end
-					Item.new(self, *random_walkable_square, "butt", "B", 8).listen_for(:tread) do
+					Item.new(self, *random_walkable_square, "butt", "B", 8).listen_for(:tread, Game.player) do
 						Dispatcher.queue_message("Don't step on me, motherfucker!")
 					end
-					Item.new(self, *random_walkable_square, "angry tile", "*", 4).listen_for(:tread) do |player, me|
+					Item.new(self, *random_walkable_square, "angry tile", "*", 4).listen_for(:tread, Game.player) do |player, me|
 						Dispatcher.queue_message("You step on an extremely angry floor tile.")
 						Dispatcher.queue_message("\"You a dead motherfucker now!\" it screams.", true)
 						me.color = 2
-						me.listen_for(:tread) do
+						me.listen_for(:tread, Game.player) do
 							Dispatcher.queue_message("You step on the angry floor tile again.")
 							Dispatcher.queue_message("\"I told you you was dead, motherfucker!\"")
 							Game.over!
 						end
 					end
-					m = Monster.new(self, *random_walkable_square, "purple wanderer", "@", 6)
+					m = Monster.new(self, *random_walkable_square, "Canadian", "@", 6)
 					m.set_turn do
 						m.move
 					end
@@ -350,7 +350,7 @@ module Roguelike
 					end
 
 					# trigger event
-					return Event.new("create-complete", self)
+					return Event.new(:create_complete, self)
 				end
 			end
 
