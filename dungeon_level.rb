@@ -326,10 +326,15 @@ module Roguelike
 					end
 
 					# populate the map with critters, toys, and staircases
-					Item.new(self, *random_walkable_square, "ampersand", "&", 12).listen_for(:tread, Game.player) do |me|
-						Dispatcher.queue_message("You step on an ampersand, squishing it flat!")
-						me.remove
-					end
+					Item.new(self, *random_walkable_square, "ampersand", "&", 12)
+						.listen_for(:tread, Game.player) do |me|
+							Dispatcher.queue_message("You step on an ampersand, squishing it flat!")
+							me.remove
+						end
+						.listen_for(:see, Game.player) do |me|
+							me.ignore(:see)
+							Dispatcher.queue_message("You spy the rarest and most wondrous item: an ampersand, gleaming on the cave floor!", true)
+						end
 					Item.new(self, *random_walkable_square, "diamond", "^", 5)
 					Item.new(self, *random_walkable_square, "dildo", "/", 2).listen_for(:tread, Game.player) do |me|
 						Dispatcher.queue_message("The big red dildo squeaks hopefully.")

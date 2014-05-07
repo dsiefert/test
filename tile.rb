@@ -51,7 +51,7 @@ module Roguelike
 		end
 
 		def reveal
-			return light if !transit_time.nil?
+			return light if transit_time
 
 			(-1 .. 1).each do |x|
 				(-1 .. 1).each do |y|
