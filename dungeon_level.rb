@@ -130,6 +130,10 @@ module Roguelike
 			# return DungeonLevel below this one, if any
 		end
 
+		def map
+			self
+		end
+
 		def unoccupied?(x, y)
 			tile_type(x, y) == false
 		end
