@@ -338,6 +338,14 @@ module Roguelike
 					# populate the map with critters, toys, and staircases
 
 					Items::Staircase.new(self, *@unmarked_rooms.sample.mark.random_square, :down)
+10.times do
+					Items::Item.new(self, *random_square(:empty?), "land mine", ".", 8)
+						.listen_for(:tread, Game.player) do |me|
+							me.ignore(:tread)
+							me.color = 10
+							Dispatcher.queue_message("You step on a land mine. It explodes!", true)
+						end
+end
 					Items::Item.new(self, *random_square(:empty?), "ampersand", "&", 12)
 						.listen_for(:tread, Game.player) do |me|
 							Dispatcher.queue_message("You step on an ampersand, squishing it flat!")
