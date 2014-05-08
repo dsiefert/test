@@ -25,7 +25,8 @@ module Roguelike
 		COLUMNS         = 78
 		ROWS            = 23
 
-		attr_reader :columns, :rows, :rooms, :corridors, :offset_y, :offset_x, :map_attempts, :up_square
+		attr_reader :columns, :rows, :rooms, :corridors, :offset_y, :offset_x, :map_attempts, :up_square, :title
+		attr_accessor :depth
 
 		def initialize(title = "A mysterious dungeon", has_random_map = true)
 			Event.new(:initialize, self)
@@ -86,7 +87,8 @@ module Roguelike
 			end
 
 			# and the title. note that we trim it to 72 max to allow three columns plus a space on either side
-			$window.mvaddstr(@offset_y - 1, 3, " #{@title} ")
+			$window.mvaddstr(@offset_y - 1, 3, " #{title}")
+			$window.mvaddstr(@offset_y - 1, @offset_x + @columns - 2 - depth.to_s.length, " #{depth} ")
 
 			#items!
 			@movables.each do |movable|
@@ -525,7 +527,7 @@ module Roguelike
 					end
 				end
 
-				if area_empty?(x1 - 1, y1 - 1, x2 + 1, y2 + 1, except: [[x, y]])
+				if area_empty?(x1, y1, x2, y2)#(x1 - 1, y1 - 1, x2 + 1, y2 + 1, except: [[x, y]])
 					room = Room.new(x1, y1, x2, y2, self)
 					@rooms.push(room)
 					return room
