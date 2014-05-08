@@ -48,7 +48,7 @@ module Roguelike
 		end
 
 		def hear
-			@heard = false
+			@heard = true
 		end
 
 		def initialize(event_name, sender, options = {})
