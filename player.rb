@@ -13,8 +13,8 @@ module Roguelike
 
 		def set_location(map, x, y = nil)
 			x, y = x unless y
-			
-			return false if @map || !map.is_a?(Roguelike::DungeonLevel)
+
+			return false if !map.is_a?(Roguelike::DungeonLevel)
 			@map, @x, @y = map, x, y
 		end
 
