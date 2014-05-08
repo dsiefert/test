@@ -17,17 +17,17 @@ module Roguelike
 
 		attr_reader :event_name, :sender, :time, :offset
 
-		def self.listen(name, listener, callback = nil, sender = nil, &block)
+		def self.listen(name, listener, callback = nil, sender = nil)
 			# first remove any existing listeners by the same object for the same event on the same sender
 			ignore(name, listener, sender)
-			@@listeners << EventListener.new(name, listener, (callback || name.to_sym), sender, &block)
+			@@listeners << EventListener.new(name, listener, (callback || name.to_sym), sender)
 		end
 
 		def self.ignore(name, listener, sender = nil)
 			@@listeners.reject! do |l|
 				l.name == name &&
 				l.listener == listener &&
-				(sender.nil? || l.sender.nil? || l.sender == sender)
+				(sender.nil? || l.sender.nil? || l.sender === sender)
 			end
 		end
 
@@ -39,11 +39,20 @@ module Roguelike
 			@@summary
 		end
 
+		def unheard?
+			@unheard
+		end
+
+		def hear
+			@unheard = false
+		end
+
 		def initialize(event_name, sender, options = {})
 			@event_name = event_name.to_sym
 			@sender = sender
 			@time = Time.now
 			@offset = @@log.last ? Time.now - @@log.last.time : 0.0
+			@unheard = true
 
 			@@log.push(self)
 			@@summary.push("#{event_name}, by #{sender.class} (#{sender.object_id}) at #{@time} (#{@offset})")
@@ -59,24 +68,24 @@ module Roguelike
 				end
 			end
 
-			listeners.map { |l| l.alert(sender) if l.name == event_name }
+			listeners.map { |l| l.alert(sender, self) if l.name == event_name }
 		end
 	end
 
 	class EventListener
 		attr_reader :name, :listener, :sender
 
-		def initialize(name, listener, callback, sender, &block)
+		def initialize(name, listener, callback, sender)
 			@name     = name
 			@listener = listener
 			@callback = callback
 			@sender   = sender
-			@block    = block if block_given?
 		end
 
-		def alert(sender)
-			if (!@block || @block.call) && (@sender.nil? || @sender === sender)
+		def alert(sender, event)
+			if @sender.nil? || @sender === sender
 				@listener.send(@callback, sender)
+				event.hear
 			end
 		end
 	end
