@@ -39,12 +39,16 @@ module Roguelike
 			@@summary
 		end
 
+		def heard?
+			@heard
+		end
+
 		def unheard?
-			@unheard
+			!@heard
 		end
 
 		def hear
-			@unheard = false
+			@heard = false
 		end
 
 		def initialize(event_name, sender, options = {})
