@@ -5,6 +5,22 @@ require_relative 'dispatcher'
 require_relative 'player'
 
 module Roguelike
+	TITLES = [
+		"A dark and gloomy snide field",
+		"A mysterious dungeon",
+		"Some caves or something",
+		"A dark place",
+		"A maze of twisty little passages, all alike",
+		"Wait, what?",
+		"Somewhere deep below the ground",
+		"The lair of some foul creature",
+		"An abandoned dwarven settlement",
+		"Somewhere that smells bad",
+		"A vast network of claustrophobic tunnels",
+		"The tomb of something you'd rather not imagine",
+		"An undisclosed location"
+	]
+
 	module Game
 		module_function
 
@@ -13,24 +29,8 @@ module Roguelike
 		end
 
 		def start
-			titles = [
-				"A dark and gloomy snide field",
-				"A mysterious dungeon",
-				"Some caves or something",
-				"A dark place",
-				"A maze of twisty little passages, all alike",
-				"Wait, what?",
-				"Somewhere deep below the ground",
-				"The lair of some foul creature",
-				"An abandoned dwarven settlement",
-				"Somewhere that smells bad",
-				"A vast network of claustrophobic tunnels",
-				"The tomb of something you'd rather not imagine",
-				"An undisclosed location"
-			]
-
 			Game.player = Player.new
-			dungeon_level = Roguelike::DungeonLevel.new(titles.sample)
+			dungeon_level = Roguelike::DungeonLevel.new(::Roguelike::TITLES.sample)
 			Game.dungeon_level = dungeon_level
 			Game.player.set_location(dungeon_level, dungeon_level.random_walkable_square)
 			dungeon_level.draw

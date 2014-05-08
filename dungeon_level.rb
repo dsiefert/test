@@ -326,6 +326,14 @@ module Roguelike
 					end
 
 					# populate the map with critters, toys, and staircases
+					Item.new(self, *random_walkable_square, "staircase", ">", 8).listen_for(:tread, Game.player) do |me|
+						Dispatcher.queue_message("You walk down the stairs . . .", true)
+						Game.dungeon_level.draw
+						dungeon_level = Roguelike::DungeonLevel.new(::Roguelike::TITLES.sample)
+						Game.dungeon_level = dungeon_level
+						Game.player.set_location(dungeon_level, dungeon_level.random_walkable_square)
+						dungeon_level.draw
+					end
 					Item.new(self, *random_walkable_square, "ampersand", "&", 12)
 						.listen_for(:tread, Game.player) do |me|
 							Dispatcher.queue_message("You step on an ampersand, squishing it flat!")
@@ -335,7 +343,9 @@ module Roguelike
 							me.ignore(:see)
 							Dispatcher.queue_message("You spy the rarest and most wondrous item: an ampersand, gleaming on the cave floor!", true)
 						end
-					Item.new(self, *random_walkable_square, "diamond", "^", 5)
+					Item.new(self, *random_walkable_square, "diamond", "^", 5).listen_for(:tread, Game.player) do |me|
+						Dispatcher.queue_message("The diamond whispers something. \"#{::Roguelike::FORTUNES.sample}\"")
+					end
 					Item.new(self, *random_walkable_square, "dildo", "/", 2).listen_for(:tread, Game.player) do |me|
 						Dispatcher.queue_message("The big red dildo squeaks hopefully.")
 						me.listen_for(:sneeze, Game.player) { Dispatcher.queue_message("The big red dildo shouts, \"Bless you!\"") }
