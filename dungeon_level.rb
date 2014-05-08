@@ -369,7 +369,7 @@ module Roguelike
 					Item.new(self, *random_empty_square, "diamond", "^", 5).listen_for(:tread, Game.player) do |me|
 						Dispatcher.queue_message("The diamond whispers something. \"#{::Roguelike::FORTUNES.sample}\"")
 					end
-					Item.new(self, *random_empty_square, "dildo", "/", 2)
+					Item.new(self, *random_empty_square, "big red dildo", "/", 2)
 						.listen_for(:tread, Game.player) do |me|
 							Dispatcher.queue_message("The big red dildo squeaks hopefully.")
 							me.listen_for(:sneeze, Game.player) { Dispatcher.queue_message("The big red dildo shouts, \"Bless you!\"") }
@@ -394,6 +394,9 @@ module Roguelike
 						Dispatcher.queue_message("You step on an extremely angry floor tile.")
 						Dispatcher.queue_message("\"You a dead motherfucker now!\" it screams.", true)
 						me.color = 2
+						me.listen_for(:sneeze, Game.player) do
+							Dispatcher.queue_message("\"I'm gonna find you and kill you, motherfucker!\" shouts the angry tile.")
+						end
 						me.listen_for(:tread, Game.player) do
 							Dispatcher.queue_message("You step on the angry floor tile again.")
 							Dispatcher.queue_message("\"I told you you was dead, motherfucker!\"")
