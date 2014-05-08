@@ -120,11 +120,18 @@ module Roguelike
 
 		def walkable?(x, y = nil)
 			return false if x.nil?
-			x, y = x if y.nil?
+			x, y = x unless y
 
 			return false if Game.player && x == Game.player.x && y == Game.player.y
 
 			walkable_except_player?(x, y)
+		end
+
+		def empty?(x, y = nil)
+			return false if x.nil?
+			x, y = x unless y
+
+			walkable?(x, y) && movables(x, y).empty?
 		end
 
 		def walkable_except_player?(x, y = nil)
@@ -147,6 +154,18 @@ module Roguelike
 				x = Random.rand(0 .. columns - 1)
 				y = Random.rand(0 .. rows - 1)
 			end 
+
+			[x, y]
+		end
+
+		def random_empty_square
+			x = nil
+			y = nil
+
+			until empty?(x, y)
+				x = Random.rand(0 .. columns - 1)
+				y = Random.rand(0 .. rows - 1)
+			end
 
 			[x, y]
 		end
@@ -326,15 +345,15 @@ module Roguelike
 					end
 
 					# populate the map with critters, toys, and staircases
-					Item.new(self, *random_walkable_square, "staircase", ">", 8).listen_for(:tread, Game.player) do |me|
+					Item.new(self, *random_empty_square, "staircase", ">", 8).listen_for(:tread, Game.player) do |me|
+						dungeon_level = Roguelike::DungeonLevel.new(::Roguelike::TITLES.sample)
 						Dispatcher.queue_message("You walk down the stairs . . .", true)
 						Game.dungeon_level.draw
-						dungeon_level = Roguelike::DungeonLevel.new(::Roguelike::TITLES.sample)
 						Game.dungeon_level = dungeon_level
-						Game.player.set_location(dungeon_level, dungeon_level.random_walkable_square)
+						Game.player.set_location(dungeon_level, dungeon_level.random_empty_square)
 						dungeon_level.draw
 					end
-					Item.new(self, *random_walkable_square, "ampersand", "&", 12)
+					Item.new(self, *random_empty_square, "ampersand", "&", 12)
 						.listen_for(:tread, Game.player) do |me|
 							Dispatcher.queue_message("You step on an ampersand, squishing it flat!")
 							me.remove
@@ -343,10 +362,10 @@ module Roguelike
 							me.ignore(:see)
 							Dispatcher.queue_message("You spy the rarest and most wondrous item: an ampersand, gleaming on the cave floor!", true)
 						end
-					Item.new(self, *random_walkable_square, "diamond", "^", 5).listen_for(:tread, Game.player) do |me|
+					Item.new(self, *random_empty_square, "diamond", "^", 5).listen_for(:tread, Game.player) do |me|
 						Dispatcher.queue_message("The diamond whispers something. \"#{::Roguelike::FORTUNES.sample}\"")
 					end
-					Item.new(self, *random_walkable_square, "dildo", "/", 2).listen_for(:tread, Game.player) do |me|
+					Item.new(self, *random_empty_square, "dildo", "/", 2).listen_for(:tread, Game.player) do |me|
 						Dispatcher.queue_message("The big red dildo squeaks hopefully.")
 						me.listen_for(:sneeze, Game.player) { Dispatcher.queue_message("The big red dildo shouts, \"Bless you!\"") }
 						me.listen_for(:tread, Game.player) do
@@ -355,10 +374,10 @@ module Roguelike
 							me.ignore(:sneeze)
 						end
 					end
-					Item.new(self, *random_walkable_square, "rug", "O", 8).listen_for(:tread, Game.player) do
+					Item.new(self, *random_empty_square, "rug", "O", 8).listen_for(:tread, Game.player) do
 						Dispatcher.queue_message("The rug shouts, \"Don't step on me, motherfucker!\"")
 					end
-					Item.new(self, *random_walkable_square, "angry tile", "*", 4).listen_for(:tread, Game.player) do |me|
+					Item.new(self, *random_empty_square, "angry tile", "*", 4).listen_for(:tread, Game.player) do |me|
 						Dispatcher.queue_message("You step on an extremely angry floor tile.")
 						Dispatcher.queue_message("\"You a dead motherfucker now!\" it screams.", true)
 						me.color = 2
@@ -369,7 +388,7 @@ module Roguelike
 							Game.over!
 						end
 					end
-					Monster.new(self, *random_walkable_square, "Canadian", "@", 6)
+					Monster.new(self, *random_empty_square, "Canadian", "@", 6)
 						.listen_for(:turn) do |me|
 							me.move
 						end
