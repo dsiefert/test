@@ -12,6 +12,7 @@
 
 require 'ncursesw'
 require_relative 'game'
+require_relative 'fortunes'
 
 module Roguelike
 	class Error < ::StandardError
