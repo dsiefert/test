@@ -106,6 +106,22 @@ module Roguelike
 			Event.new(:draw_complete, self)
 		end
 
+		def set_upstairs(map, x = nil, y = nil, x_up, y_up)
+			x, y = random_empty_square unless x
+			x, y = x unless y
+
+			Item.new(self, x, y, "up staircase", "<", 8, destination: map)
+				.listen_for(:tread) do
+					Dispatcher.queue_message("A staircase leading upwards back towards the world of daylight.")
+				end
+				.listen_for(:ascend) do |me|
+					Dispatcher.queue_message("You climb the stairs . . .", true)
+					Game.dungeon_level.draw
+					Game.dungeon_level = map
+					Game.player.set_location(map, x_up, y_up)
+				end
+		end
+
 		def upstairs
 			# return DungeonLevel above this one, if any
 		end
@@ -345,16 +361,18 @@ module Roguelike
 					end
 
 					# populate the map with critters, toys, and staircases
-					Item.new(self, *random_empty_square, "staircase", ">", 8)
+					Item.new(self, *random_empty_square, "down staircase", ">", 8)
 						.listen_for(:tread, Game.player) do
 							Dispatcher.queue_message("A staircase leading further into the bowels of the earth.")
 						end
-						.listen_for(:descend, Game.player) do
+						.listen_for(:descend, Game.player) do |me|
 							dungeon_level = Roguelike::DungeonLevel.new(::Roguelike::TITLES.sample)
 							Dispatcher.queue_message("You walk down the stairs . . .", true)
 							Game.dungeon_level.draw
 							Game.dungeon_level = dungeon_level
-							Game.player.set_location(dungeon_level, dungeon_level.random_empty_square)
+							square = dungeon_level.random_empty_square
+							Game.dungeon_level.set_upstairs(self, *square, me.x, me.y)
+							Game.player.set_location(dungeon_level, square)
 							dungeon_level.draw
 						end
 					Item.new(self, *random_empty_square, "ampersand", "&", 12)

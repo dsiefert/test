@@ -89,5 +89,11 @@ module Roguelike
 				Dispatcher.queue_message("You attempt to descend but there is nothing to descend.")
 			end
 		end
+
+		def ascend
+			if Event.new(:ascend, self, local: [x, y]).unheard?
+				Dispatcher.queue_message("What do you expect to climb, exactly?")
+			end
+		end
 	end
 end

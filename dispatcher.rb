@@ -159,6 +159,8 @@ module Roguelike
 					Game.player.hug
 				when '>'
 					Game.player.descend
+				when '<'
+					Game.player.ascend
 				else
 					queue_message("Pressed #{char}")
 				end
