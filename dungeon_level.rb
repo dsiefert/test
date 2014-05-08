@@ -375,6 +375,7 @@ module Roguelike
 
 					# populate the map with critters, toys, and staircases
 					Item.new(self, *random_empty_square, "down staircase", ">", 8)
+					# TODO: @downstairs and anything related need to be on the staircase, not the level
 						.listen_for(:tread, Game.player) do
 							Dispatcher.queue_message("A staircase leading further into the bowels of the earth.")
 						end
