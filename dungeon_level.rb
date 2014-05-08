@@ -147,25 +147,12 @@ module Roguelike
 			!square(x, y).transit_time.nil?
 		end
 
-		def random_walkable_square
-			x = nil
-			y = nil
+		def random_square(*options)
+			x = Random.rand(0 .. columns - 1)
+			y = Random.rand(0 .. rows - 1)
 
-			until walkable?(x, y)
-				x = Random.rand(0 .. columns - 1)
-				y = Random.rand(0 .. rows - 1)
-			end 
-
-			[x, y]
-		end
-
-		def random_empty_square
-			x = nil
-			y = nil
-
-			until empty?(x, y)
-				x = Random.rand(0 .. columns - 1)
-				y = Random.rand(0 .. rows - 1)
+			options.each do |opt|
+				return random_square(*options) unless send(opt, x, y)
 			end
 
 			[x, y]
@@ -347,8 +334,8 @@ module Roguelike
 
 					# populate the map with critters, toys, and staircases
 
-					Items::Staircase.new(self, *random_empty_square, :down)
-					Items::Item.new(self, *random_empty_square, "ampersand", "&", 12)
+					Items::Staircase.new(self, *random_square(:empty?), :down)
+					Items::Item.new(self, *random_square(:empty?), "ampersand", "&", 12)
 						.listen_for(:tread, Game.player) do |me|
 							Dispatcher.queue_message("You step on an ampersand, squishing it flat!")
 							me.remove
@@ -357,10 +344,10 @@ module Roguelike
 							me.ignore(:see)
 							Dispatcher.queue_message("You spy the rarest and most wondrous item: an ampersand, gleaming on the cave floor!", true)
 						end
-					Items::Item.new(self, *random_empty_square, "diamond", "^", 5).listen_for(:tread, Game.player) do |me|
+					Items::Item.new(self, *random_square(:empty?), "diamond", "^", 5).listen_for(:tread, Game.player) do |me|
 						Dispatcher.queue_message("The diamond whispers something. \"#{::Roguelike::FORTUNES.sample}\"")
 					end
-					Items::Item.new(self, *random_empty_square, "big red dildo", "/", 2)
+					Items::Item.new(self, *random_square(:empty?), "big red dildo", "/", 2)
 						.listen_for(:tread, Game.player) do |me|
 							Dispatcher.queue_message("The big red dildo squeaks hopefully.")
 							me.listen_for(:sneeze, Game.player) { Dispatcher.queue_message("The big red dildo shouts, \"Bless you!\"") }
@@ -378,10 +365,10 @@ module Roguelike
 						.listen_for(:descend, Game.player) do
 							Dispatcher.queue_message("'Descend'? Making a cheap little 'going-down' joke, are we?")
 						end
-					Items::Item.new(self, *random_empty_square, "rug", "O", 8).listen_for(:tread, Game.player) do
+					Items::Item.new(self, *random_square(:empty?), "rug", "O", 8).listen_for(:tread, Game.player) do
 						Dispatcher.queue_message("The rug shouts, \"Don't step on me, motherfucker!\"")
 					end
-					Items::Item.new(self, *random_empty_square, "angry tile", "*", 4).listen_for(:tread, Game.player) do |me|
+					Items::Item.new(self, *random_square(:empty?), "angry tile", "*", 4).listen_for(:tread, Game.player) do |me|
 						Dispatcher.queue_message("You step on an extremely angry floor tile.")
 						Dispatcher.queue_message("\"You a dead motherfucker now!\" it screams.", true)
 						me.color = 2
@@ -395,7 +382,7 @@ module Roguelike
 							Game.over!
 						end
 					end
-					Monster.new(self, *random_empty_square, "Canadian", "@", 6)
+					Monster.new(self, *random_square(:empty?), "Canadian", "@", 6)
 						.listen_for(:turn) do |me|
 							me.move
 						end
