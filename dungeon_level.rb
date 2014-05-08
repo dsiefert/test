@@ -1,12 +1,13 @@
 require 'ncursesw'
 
-module Roguelike
-	require_relative 'point'
-	require_relative 'tile'
-	require_relative 'item'
-	require_relative 'monster'
-	require_relative 'fov'
+require_relative 'point'
+require_relative 'tile'
+require_relative 'item'
+require_relative 'items'
+require_relative 'monster'
+require_relative 'fov'
 
+module Roguelike
 	class DungeonLevel
 		include FOV
 
@@ -90,7 +91,7 @@ module Roguelike
 			#items!
 			@movables.each do |movable|
 				# TODO: Ensure monsters always draw after items
-				if square(movable.x, movable.y).visible? || (movable.is_a?(Item) && square(movable.x, movable.y).remembered?)
+				if square(movable.x, movable.y).visible? || (movable.is_a?(Items::Item) && square(movable.x, movable.y).remembered?)
 					Event.new(:see, Game.player, target: movable) if square(movable.x, movable.y).visible?
 					movable.draw
 				end
@@ -106,37 +107,6 @@ module Roguelike
 			# all done!
 			$window.refresh
 			Event.new(:draw_complete, self)
-		end
-
-		def set_upstairs(map, x_up, y_up, x = nil, y = nil)
-			x, y = random_empty_square unless x
-			x, y = x unless y
-
-			@up_square = [x, y]
-			@upstairs = map
-
-			Item.new(self, x, y, "up staircase", "<", 8, destination: map)
-				.listen_for(:tread) do
-					Dispatcher.queue_message("A staircase leading upwards back towards the world of daylight.")
-				end
-				.listen_for(:ascend) do |me|
-					Dispatcher.queue_message("You climb the stairs . . .", true)
-					Game.dungeon_level.draw
-					Game.dungeon_level = map
-					Game.player.set_location(map, x_up, y_up)
-				end
-		end
-
-		def upstairs
-			@map
-		end
-
-		def downstairs
-			@downstairs
-		end
-
-		def downstairs=(downstairs)
-			@downstairs = downstairs
 		end
 
 		def map
@@ -374,27 +344,9 @@ module Roguelike
 					end
 
 					# populate the map with critters, toys, and staircases
-					# TODO: @downstairs and anything related need to be on the staircase, not the level
-					Item.new(self, *random_empty_square, "down staircase", ">", 8)
-						.listen_for(:tread, Game.player) do
-							Dispatcher.queue_message("A staircase leading further into the bowels of the earth.")
-						end
-						.listen_for(:descend, Game.player) do |me|
-							Dispatcher.queue_message("You walk down the stairs . . .", true)
-							Game.dungeon_level.draw
 
-							if !@downstairs
-								@downstairs = Roguelike::DungeonLevel.new(::Roguelike::TITLES.sample)
-								square = @downstairs.random_empty_square
-								@downstairs.set_upstairs(self, me.x, me.y, *square)
-							else
-								square = @downstairs.up_square
-							end
-
-							Game.player.set_location(@downstairs, square)
-							Game.dungeon_level = @downstairs
-						end
-					Item.new(self, *random_empty_square, "ampersand", "&", 12)
+					Items::Staircase.new(self, *random_empty_square, :down)
+					Items::Item.new(self, *random_empty_square, "ampersand", "&", 12)
 						.listen_for(:tread, Game.player) do |me|
 							Dispatcher.queue_message("You step on an ampersand, squishing it flat!")
 							me.remove
@@ -403,10 +355,10 @@ module Roguelike
 							me.ignore(:see)
 							Dispatcher.queue_message("You spy the rarest and most wondrous item: an ampersand, gleaming on the cave floor!", true)
 						end
-					Item.new(self, *random_empty_square, "diamond", "^", 5).listen_for(:tread, Game.player) do |me|
+					Items::Item.new(self, *random_empty_square, "diamond", "^", 5).listen_for(:tread, Game.player) do |me|
 						Dispatcher.queue_message("The diamond whispers something. \"#{::Roguelike::FORTUNES.sample}\"")
 					end
-					Item.new(self, *random_empty_square, "big red dildo", "/", 2)
+					Items::Item.new(self, *random_empty_square, "big red dildo", "/", 2)
 						.listen_for(:tread, Game.player) do |me|
 							Dispatcher.queue_message("The big red dildo squeaks hopefully.")
 							me.listen_for(:sneeze, Game.player) { Dispatcher.queue_message("The big red dildo shouts, \"Bless you!\"") }
@@ -424,10 +376,10 @@ module Roguelike
 						.listen_for(:descend, Game.player) do
 							Dispatcher.queue_message("'Descend'? Making a cheap little 'going-down' joke, are we?")
 						end
-					Item.new(self, *random_empty_square, "rug", "O", 8).listen_for(:tread, Game.player) do
+					Items::Item.new(self, *random_empty_square, "rug", "O", 8).listen_for(:tread, Game.player) do
 						Dispatcher.queue_message("The rug shouts, \"Don't step on me, motherfucker!\"")
 					end
-					Item.new(self, *random_empty_square, "angry tile", "*", 4).listen_for(:tread, Game.player) do |me|
+					Items::Item.new(self, *random_empty_square, "angry tile", "*", 4).listen_for(:tread, Game.player) do |me|
 						Dispatcher.queue_message("You step on an extremely angry floor tile.")
 						Dispatcher.queue_message("\"You a dead motherfucker now!\" it screams.", true)
 						me.color = 2
