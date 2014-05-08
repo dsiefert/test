@@ -6,7 +6,7 @@ module Roguelike
 	class Item < Point
 		include EventCapable
 
-		attr_reader :name, :map
+		attr_reader   :name
 		attr_accessor :color
 
 		def initialize(map, x, y, name, character, color, params = {}) #will later add type or something
