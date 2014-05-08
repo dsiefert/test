@@ -10,6 +10,8 @@ module Roguelike
 		#
 		# TODO: **IMPORTANT** Figure out a way to register multiple event handler methods on an
 		# object that listens for the same event on multiple types.
+		#
+		# TODO: **IMPORTANT** LOCALIZE TO MAP FUCKER.
 
 		@@log       = []
 		@@summary   = []
