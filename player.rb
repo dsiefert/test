@@ -49,7 +49,7 @@ module Roguelike
 
 		def teleport(x = nil, y = nil)
 			if x.nil?
-				x, y = Game.dungeon_level.random_walkable_square
+				x, y = Game.dungeon_level.random_square(:walkable?)
 			elsif y.nil?
 				x, y = x
 			end
@@ -67,7 +67,7 @@ module Roguelike
 			x, y = Dispatcher.select_square
 			unless Game.dungeon_level.walkable_except_player?(x, y)
 				Dispatcher.queue_message("Controlled teleportation fail!")
-				x, y = Game.dungeon_level.random_walkable_square
+				x, y = Game.dungeon_level.random_square(:walkable?)
 			end
 
 			teleport(x, y)

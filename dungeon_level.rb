@@ -26,7 +26,7 @@ module Roguelike
 		ROWS            = 23
 
 		attr_reader :columns, :rows, :rooms, :corridors, :offset_y, :offset_x, :map_attempts, :up_square, :title
-		attr_accessor :depth
+		attr_accessor :depth, :unmarked_rooms
 
 		def initialize(title = "A mysterious dungeon", has_random_map = true)
 			Event.new(:initialize, self)
@@ -36,6 +36,7 @@ module Roguelike
 			@has_random_map = has_random_map
 			@title          = title.slice(0, 72)
 			@rooms          = []
+			@unmarked_rooms = []
 			@corridors      = []
 			@movables       = []
 			@map_attempts   = 0
@@ -259,10 +260,12 @@ module Roguelike
 
 		def create_map
 			# wipe the map in case this isn't the first go-round
-			@rooms     = []
-			@corridors = []
-			@tiles     = []
-			@movables  = []
+			@rooms          = []
+			@unmarked_rooms = []
+			@corridors      = []
+			@tiles          = []
+			@movables       = []
+
 			@columns.times do |x|
 				@tiles[x] = []
 				@rows.times do |y|
@@ -334,7 +337,7 @@ module Roguelike
 
 					# populate the map with critters, toys, and staircases
 
-					Items::Staircase.new(self, *random_square(:empty?), :down)
+					Items::Staircase.new(self, *@unmarked_rooms.sample.mark.random_square, :down)
 					Items::Item.new(self, *random_square(:empty?), "ampersand", "&", 12)
 						.listen_for(:tread, Game.player) do |me|
 							Dispatcher.queue_message("You step on an ampersand, squishing it flat!")
@@ -432,6 +435,7 @@ module Roguelike
 
 			room = Room.new(x1, y1, x2, y2, self)
 			@rooms.push(room)
+			@unmarked_rooms.push(room)
 
 			room
 		end
@@ -514,9 +518,10 @@ module Roguelike
 					end
 				end
 
-				if area_empty?(x1, y1, x2, y2)#(x1 - 1, y1 - 1, x2 + 1, y2 + 1, except: [[x, y]])
+				if area_empty?(x1, y1, x2, y2)
 					room = Room.new(x1, y1, x2, y2, self)
 					@rooms.push(room)
+					@unmarked_rooms.push(room)
 					return room
 				end
 			end

@@ -33,7 +33,7 @@ module Roguelike
 			dungeon_level = Roguelike::DungeonLevel.new(::Roguelike::TITLES.sample)
 			dungeon_level.depth = 1
 			Game.dungeon_level = dungeon_level
-			Game.player.set_location(dungeon_level, dungeon_level.random_square(:empty?))
+			Game.player.set_location(dungeon_level, dungeon_level.unmarked_rooms.sample.mark.random_square)
 			dungeon_level.draw
 		end
 

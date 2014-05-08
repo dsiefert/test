@@ -54,6 +54,29 @@ module Roguelike
 			end
 		end
 
+		def random_square
+			x = nil
+			y = nil
+
+			until @map.empty?(x, y) do
+				x = Random.rand(x1 + 1 .. x2 - 1)
+				y = Random.rand(y1 + 1 .. y2 - 1)
+			end
+
+			[x, y]
+		end
+
+		def mark
+			@marked = true
+			@map.unmarked_rooms -= [self]
+
+			self
+		end
+
+		def marked?
+			@marked
+		end
+
 		def width
 			x2 - x1 + 1
 		end
