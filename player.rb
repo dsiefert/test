@@ -85,12 +85,14 @@ module Roguelike
 		end
 
 		def descend
+			Event.new(:leave, self)
 			if Event.new(:descend, self, local: [x, y]).unheard?
 				Dispatcher.queue_message("You attempt to descend but there is nothing to descend.")
 			end
 		end
 
 		def ascend
+			Event.new(:leave, self)
 			if Event.new(:ascend, self, local: [x, y]).unheard?
 				Dispatcher.queue_message("What do you expect to climb, exactly?")
 			end
