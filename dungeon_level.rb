@@ -345,14 +345,18 @@ module Roguelike
 					end
 
 					# populate the map with critters, toys, and staircases
-					Item.new(self, *random_empty_square, "staircase", ">", 8).listen_for(:descend, Game.player) do |me|
-						dungeon_level = Roguelike::DungeonLevel.new(::Roguelike::TITLES.sample)
-						Dispatcher.queue_message("You walk down the stairs . . .", true)
-						Game.dungeon_level.draw
-						Game.dungeon_level = dungeon_level
-						Game.player.set_location(dungeon_level, dungeon_level.random_empty_square)
-						dungeon_level.draw
-					end
+					Item.new(self, *random_empty_square, "staircase", ">", 8)
+						.listen_for(:tread, Game.player) do
+							Dispatcher.queue_message("A staircase leading further into the bowels of the earth.")
+						end
+						.listen_for(:descend, Game.player) do
+							dungeon_level = Roguelike::DungeonLevel.new(::Roguelike::TITLES.sample)
+							Dispatcher.queue_message("You walk down the stairs . . .", true)
+							Game.dungeon_level.draw
+							Game.dungeon_level = dungeon_level
+							Game.player.set_location(dungeon_level, dungeon_level.random_empty_square)
+							dungeon_level.draw
+						end
 					Item.new(self, *random_empty_square, "ampersand", "&", 12)
 						.listen_for(:tread, Game.player) do |me|
 							Dispatcher.queue_message("You step on an ampersand, squishing it flat!")
@@ -365,15 +369,24 @@ module Roguelike
 					Item.new(self, *random_empty_square, "diamond", "^", 5).listen_for(:tread, Game.player) do |me|
 						Dispatcher.queue_message("The diamond whispers something. \"#{::Roguelike::FORTUNES.sample}\"")
 					end
-					Item.new(self, *random_empty_square, "dildo", "/", 2).listen_for(:tread, Game.player) do |me|
-						Dispatcher.queue_message("The big red dildo squeaks hopefully.")
-						me.listen_for(:sneeze, Game.player) { Dispatcher.queue_message("The big red dildo shouts, \"Bless you!\"") }
-						me.listen_for(:tread, Game.player) do
-							Dispatcher.queue_message("The big red dildo squeals sadly.")
-							me.ignore(:tread)
-							me.ignore(:sneeze)
+					Item.new(self, *random_empty_square, "dildo", "/", 2)
+						.listen_for(:tread, Game.player) do |me|
+							Dispatcher.queue_message("The big red dildo squeaks hopefully.")
+							me.listen_for(:sneeze, Game.player) { Dispatcher.queue_message("The big red dildo shouts, \"Bless you!\"") }
+							me.listen_for(:tread, Game.player) do
+								Dispatcher.queue_message("The big red dildo squeals sadly.")
+								me.ignore(:tread)
+								me.ignore(:sneeze)
+							end
 						end
-					end
+						.listen_for(:hug, Game.player) do |me|
+							Dispatcher.queue_message("You hug the big red dildo, and it purrs happily.")
+							me.ignore(:tread)
+							me.listen_for(:sneeze, Game.player) { Dispatcher.queue_message("The big red dildo shouts, \"I LOVE YOU!\"") }
+						end
+						.listen_for(:descend, Game.player) do
+							Dispatcher.queue_message("'Descend'? Making a cheap little 'going-down' joke, are we?")
+						end
 					Item.new(self, *random_empty_square, "rug", "O", 8).listen_for(:tread, Game.player) do
 						Dispatcher.queue_message("The rug shouts, \"Don't step on me, motherfucker!\"")
 					end
