@@ -345,7 +345,7 @@ module Roguelike
 					end
 
 					# populate the map with critters, toys, and staircases
-					Item.new(self, *random_empty_square, "staircase", ">", 8).listen_for(:tread, Game.player) do |me|
+					Item.new(self, *random_empty_square, "staircase", ">", 8).listen_for(:descend, Game.player) do |me|
 						dungeon_level = Roguelike::DungeonLevel.new(::Roguelike::TITLES.sample)
 						Dispatcher.queue_message("You walk down the stairs . . .", true)
 						Game.dungeon_level.draw

@@ -155,6 +155,10 @@ module Roguelike
 					Game.player.sneeze
 				when 'r'
 					Game.dungeon_level.reveal
+				when 'h'
+					Game.player.hug
+				when '>'
+					Game.player.descend
 				else
 					queue_message("Pressed #{char}")
 				end

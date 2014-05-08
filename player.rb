@@ -77,5 +77,17 @@ module Roguelike
 			Dispatcher.queue_message("You sneeze.")
 			Event.new(:sneeze, self)
 		end
+
+		def hug
+			Event.new(:hug, self, local: [x, y])
+
+			Dispatcher.queue_message("You pathetically hug yourself.") if Game.dungeon_level.movables(x, y).empty?
+		end
+
+		def descend
+			if Event.new(:descend, self, local: [x, y]).unheard?
+				Dispatcher.queue_message("You attempt to descend but there is nothing to descend.")
+			end
+		end
 	end
 end
