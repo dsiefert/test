@@ -24,7 +24,7 @@ module Roguelike
 		COLUMNS         = 78
 		ROWS            = 23
 
-		attr_reader :columns, :rows, :rooms, :corridors, :offset_y, :offset_x, :map_attempts
+		attr_reader :columns, :rows, :rooms, :corridors, :offset_y, :offset_x, :map_attempts, :up_square
 
 		def initialize(title = "A mysterious dungeon", has_random_map = true)
 			Event.new(:initialize, self)
@@ -50,6 +50,8 @@ module Roguelike
 			@offset_y = ((25 - @rows) / 2).floor
 
 			create_map if has_random_map
+
+			self
 		end
 
 		def draw(display_messages = true)
@@ -106,9 +108,12 @@ module Roguelike
 			Event.new(:draw_complete, self)
 		end
 
-		def set_upstairs(map, x = nil, y = nil, x_up, y_up)
+		def set_upstairs(map, x_up, y_up, x = nil, y = nil)
 			x, y = random_empty_square unless x
 			x, y = x unless y
+
+			@up_square = [x, y]
+			@upstairs = map
 
 			Item.new(self, x, y, "up staircase", "<", 8, destination: map)
 				.listen_for(:tread) do
@@ -123,11 +128,15 @@ module Roguelike
 		end
 
 		def upstairs
-			# return DungeonLevel above this one, if any
+			@map
 		end
 
 		def downstairs
-			# return DungeonLevel below this one, if any
+			@downstairs
+		end
+
+		def downstairs=(downstairs)
+			@downstairs = downstairs
 		end
 
 		def map
@@ -370,14 +379,19 @@ module Roguelike
 							Dispatcher.queue_message("A staircase leading further into the bowels of the earth.")
 						end
 						.listen_for(:descend, Game.player) do |me|
-							dungeon_level = Roguelike::DungeonLevel.new(::Roguelike::TITLES.sample)
 							Dispatcher.queue_message("You walk down the stairs . . .", true)
 							Game.dungeon_level.draw
-							Game.dungeon_level = dungeon_level
-							square = dungeon_level.random_empty_square
-							Game.dungeon_level.set_upstairs(self, *square, me.x, me.y)
-							Game.player.set_location(dungeon_level, square)
-							dungeon_level.draw
+
+							if !@downstairs
+								@downstairs = Roguelike::DungeonLevel.new(::Roguelike::TITLES.sample)
+								square = @downstairs.random_empty_square
+								@downstairs.set_upstairs(self, me.x, me.y, *square)
+							else
+								square = @downstairs.up_square
+							end
+
+							Game.player.set_location(@downstairs, square)
+							Game.dungeon_level = @downstairs
 						end
 					Item.new(self, *random_empty_square, "ampersand", "&", 12)
 						.listen_for(:tread, Game.player) do |me|
