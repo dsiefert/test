@@ -5,7 +5,7 @@ module Roguelike
 		attr_reader :name
 		attr_accessor :color
 
-		def initialize(map, x, y, name, character, color) #will later add type or something
+		def initialize(map, x, y, name, character, color, params = {}) #will later add type or something
 			super(map, x, y)
 
 			@name, @character, @color = name, character, color
@@ -14,11 +14,16 @@ module Roguelike
 
 			listen_for(:tread, Game.player) { Dispatcher.queue_message("You step on a #{name}!") }
 
+			@walkable = true
+			params.each_pair do |k, v|
+				instance_variable_set("@#{k}", v)
+			end
+
 			self
 		end
 
 		def walkable?
-			true
+			@walkable
 		end
 
 		def remove
