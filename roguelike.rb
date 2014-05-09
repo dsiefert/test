@@ -23,7 +23,9 @@ module Roguelike
 		"May the force be with you.",
 		"May the wind be ever at your back.",
 		"May the road rise to meet your feet.",
+		"Slainte!",
 		"Fare thee well.",
+		"Farewell, fair cruelty!",
 		"Play more roguelike games!",
 		"Send me a check!"
 	]
