@@ -52,7 +52,10 @@ module Roguelike
 			@offset_x = ((80 - @columns) / 2).floor
 			@offset_y = ((25 - @rows) / 2).floor
 
-			create_map if has_random_map
+			if has_random_map
+				Event.new(:create_start, self)
+				create_map
+			end
 
 			self
 		end
@@ -320,100 +323,103 @@ module Roguelike
 							if x == 0 || x == columns - 1 || y == 0 || y == rows - 1
 								type = :hard_rock
 							else
-								type = case tile_type(x, y)
-									when true
-										:dirt
-									when 1
-										:obsidian
-									when 2
-										:moss
-									when false
-										:soft_rock
-								end
+								type =
+									case tile_type(x, y)
+										when true
+											:dirt
+										when 1
+											:obsidian
+										when 2
+											:moss
+										when false
+											:soft_rock
+									end
 							end
 							@tiles[x][y] = (Tile.new(self, x, y, type))
 						end
 					end
 
-					# populate the map with critters, toys, and staircases
-
-					Items::Staircase.new(self, *@unmarked_rooms.sample.mark.random_square, :down)
-10.times do
-					Items::Item.new(self, *random_square(:empty?), "land mine", "^", 10, invisible: true)
-						.listen_for(:tread, Roguelike::Player) do |me|
-							me.ignore(:tread)
-							me.invisible = false
-							Dispatcher.queue_message("You step on a land mine. It explodes!", true)
-						end
-end
-					Items::Item.new(self, *random_square(:empty?), "ampersand", "&", 12)
-						.listen_for(:tread, Roguelike::Player) do |me|
-							Dispatcher.queue_message("You step on an ampersand, squishing it flat!")
-							me.remove
-						end
-						.listen_for(:see, Roguelike::Player) do |me|
-							me.ignore(:see)
-							Dispatcher.queue_message("You spy the rarest and most wondrous item: an ampersand, gleaming on the cave floor!", true)
-						end
-					Items::Item.new(self, *random_square(:empty?), "diamond", "^", 5).listen_for(:tread, Roguelike::Player) do |me|
-						Dispatcher.queue_message("The diamond whispers something. \"#{::Roguelike::FORTUNES.sample}\"")
-					end
-					Items::Item.new(self, *random_square(:empty?), "big red dildo", "/", 2)
-						.listen_for(:tread, Roguelike::Player) do |me|
-							Dispatcher.queue_message("The big red dildo squeaks hopefully.")
-							me.listen_for(:sneeze, Roguelike::Player) { Dispatcher.queue_message("The big red dildo shouts, \"Bless you!\"") }
-							me.listen_for(:tread, Roguelike::Player) do
-								Dispatcher.queue_message("The big red dildo squeals sadly.")
-								me.ignore(:tread)
-								me.ignore(:sneeze)
-							end
-						end
-						.listen_for(:hug, Roguelike::Player) do |me|
-							Dispatcher.queue_message("You hug the big red dildo, and it purrs happily.")
-							me.ignore(:tread)
-							me.listen_for(:sneeze, Roguelike::Player) { Dispatcher.queue_message("The big red dildo shouts, \"I LOVE YOU!\"") }
-						end
-						.listen_for(:descend, Roguelike::Player) do
-							Dispatcher.queue_message("'Descend'? Making a cheap little 'going-down' joke, are we?")
-						end
-					Items::Item.new(self, *random_square(:empty?), "rug", "O", 8).listen_for(:tread, Roguelike::Player) do
-						Dispatcher.queue_message("The rug shouts, \"Don't step on me, motherfucker!\"")
-					end
-					Items::Item.new(self, *random_square(:empty?), "angry tile", "*", 4).listen_for(:tread, Roguelike::Player) do |me|
-						Dispatcher.queue_message("You step on an extremely angry floor tile.")
-						Dispatcher.queue_message("\"You a dead motherfucker now!\" it screams.", true)
-						me.color = 2
-						me.listen_for(:sneeze, Roguelike::Player) do
-							Dispatcher.queue_message("\"I'm gonna find you and kill you, motherfucker!\" shouts the angry tile.")
-						end
-						me.listen_for(:tread, Roguelike::Player) do
-							Dispatcher.queue_message("You step on the angry floor tile again.")
-							Dispatcher.queue_message("\"I told you you was dead, motherfucker!\"")
-							Dispatcher.queue_message("The tile crumbles and tentacles shoot out, wrapping around you.")
-							Game.over!
-						end
-					end
-					Monster.new(self, *random_square(:empty?), "Canadian", "@", 6)
-						.listen_for(:turn) do |me|
-							me.move
-						end
-						.listen_for(:bump, Roguelike::Player) do
-							Dispatcher.queue_message("You bump into a Canadian. The Canadian looks up in surprise. \"Oh, I'm dreadfully sorry!\" he says.")
-						end
-						.listen_for(:see, Roguelike::Player) do |me|
-							me.ignore(:see)
-							Dispatcher.queue_message("You see a Canadian muttering to himself and pacing.", true)
-						end
-						.listen_for(:hug, Roguelike::Player) do
-							Dispatcher.queue_message("You hug the Canadian. He nuzzles your neck a little.")
-						end
-
-					# trigger event
-					return Event.new(:create_complete, self)
+					break
 				end
 			end
 
-			create_map
+			return create_map if (room_area / (rows * columns).to_f) < room_ratio
+
+			# populate the map with critters, toys, and staircases
+
+			Items::Staircase.new(self, *@unmarked_rooms.sample.mark.random_square, :down)
+			10.times do
+				Items::Item.new(self, *random_square(:empty?), "land mine", "^", 10, invisible: true)
+					.listen_for(:tread, Roguelike::Player) do |me|
+						me.ignore(:tread)
+						me.invisible = false
+						Dispatcher.queue_message("You step on a land mine. It explodes!", true)
+					end
+			end
+			Items::Item.new(self, *random_square(:empty?), "ampersand", "&", 12)
+				.listen_for(:tread, Roguelike::Player) do |me|
+					Dispatcher.queue_message("You step on an ampersand, squishing it flat!")
+					me.remove
+				end
+				.listen_for(:see, Roguelike::Player) do |me|
+					me.ignore(:see)
+					Dispatcher.queue_message("You spy the rarest and most wondrous item: an ampersand, gleaming on the cave floor!", true)
+				end
+			Items::Item.new(self, *random_square(:empty?), "diamond", "^", 5).listen_for(:tread, Roguelike::Player) do |me|
+				Dispatcher.queue_message("The diamond whispers something. \"#{::Roguelike::FORTUNES.sample}\"")
+			end
+			Items::Item.new(self, *random_square(:empty?), "big red dildo", "/", 2)
+				.listen_for(:tread, Roguelike::Player) do |me|
+					Dispatcher.queue_message("The big red dildo squeaks hopefully.")
+					me.listen_for(:sneeze, Roguelike::Player) { Dispatcher.queue_message("The big red dildo shouts, \"Bless you!\"") }
+					me.listen_for(:tread, Roguelike::Player) do
+						Dispatcher.queue_message("The big red dildo squeals sadly.")
+						me.ignore(:tread)
+						me.ignore(:sneeze)
+					end
+				end
+				.listen_for(:hug, Roguelike::Player) do |me|
+					Dispatcher.queue_message("You hug the big red dildo, and it purrs happily.")
+					me.ignore(:tread)
+					me.listen_for(:sneeze, Roguelike::Player) { Dispatcher.queue_message("The big red dildo shouts, \"I LOVE YOU!\"") }
+				end
+				.listen_for(:descend, Roguelike::Player) do
+					Dispatcher.queue_message("'Descend'? Making a cheap little 'going-down' joke, are we?")
+				end
+			Items::Item.new(self, *random_square(:empty?), "rug", "O", 8).listen_for(:tread, Roguelike::Player) do
+				Dispatcher.queue_message("The rug shouts, \"Don't step on me, motherfucker!\"")
+			end
+			Items::Item.new(self, *random_square(:empty?), "angry tile", "*", 4).listen_for(:tread, Roguelike::Player) do |me|
+				Dispatcher.queue_message("You step on an extremely angry floor tile.")
+				Dispatcher.queue_message("\"You a dead motherfucker now!\" it screams.", true)
+				me.color = 2
+				me.listen_for(:sneeze, Roguelike::Player) do
+					Dispatcher.queue_message("\"I'm gonna find you and kill you, motherfucker!\" shouts the angry tile.")
+				end
+				me.listen_for(:tread, Roguelike::Player) do
+					Dispatcher.queue_message("You step on the angry floor tile again.")
+					Dispatcher.queue_message("\"I told you you was dead, motherfucker!\"")
+					Dispatcher.queue_message("The tile crumbles and tentacles shoot out, wrapping around you.")
+					Game.over!
+				end
+			end
+			Monster.new(self, *random_square(:empty?), "Canadian", "@", 6)
+				.listen_for(:turn) do |me|
+					me.move
+				end
+				.listen_for(:bump, Roguelike::Player) do
+					Dispatcher.queue_message("You bump into a Canadian. The Canadian looks up in surprise. \"Oh, I'm dreadfully sorry!\" he says.")
+				end
+				.listen_for(:see, Roguelike::Player) do |me|
+					me.ignore(:see)
+					Dispatcher.queue_message("You see a Canadian muttering to himself and pacing.", true)
+				end
+				.listen_for(:hug, Roguelike::Player) do
+					Dispatcher.queue_message("You hug the Canadian. He nuzzles your neck a little.")
+				end
+
+			# trigger event
+			return Event.new(:create_complete, self)
 		end
 
 		def add_room(coordinates = {})
