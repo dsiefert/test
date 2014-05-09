@@ -27,6 +27,7 @@ module Roguelike
 		"Fare thee well.",
 		"Farewell, fair cruelty!",
 		"Play more roguelike games!",
+		"Love and other indoor sports!",
 		"Send me a check!"
 	]
 

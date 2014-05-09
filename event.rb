@@ -1,12 +1,6 @@
 module Roguelike
 	class Event
-		# TODO: Clean these up so they only work on the currently-loaded map. No triggering events
-		# on maps that aren't displayed.
-		#
 		# TODO: Give event origins an x/y location so that the player can witness them, or not.
-		#
-		# TODO: Handle local events a bit more cleanly, with an options hash {:local => [x, y]}
-		# Other options may yield themselves with time.
 		#
 		# TODO: **IMPORTANT** Figure out a way to register multiple event handler methods on an
 		# object that listens for the same event on multiple types.

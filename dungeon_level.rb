@@ -91,7 +91,7 @@ module Roguelike
 			end
 
 			# and the title. note that we trim it to 72 max to allow three columns plus a space on either side
-			$window.mvaddstr(@offset_y - 1, 3, " #{title}")
+			$window.mvaddstr(@offset_y - 1, 3, " #{title} ")
 			$window.mvaddstr(@offset_y - 1, @offset_x + @columns - 2 - depth.to_s.length, " #{depth} ")
 
 			#items!
