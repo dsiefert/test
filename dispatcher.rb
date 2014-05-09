@@ -49,8 +49,43 @@ module Roguelike
 			# TODO: pause and allow for message reset; set the keyboard dispatcher into some sort of :message mode
 		end
 
+		def select_direction
+			queue_message("Select a direction.")
+			display_messages
+
+			while char = $window.getch
+				direction = case char.chr
+				when "1"
+					[-1, 1]
+				when "2"
+					[0, 1]
+				when "3"
+					[1, 1]
+				when "4"
+					[-1, 0]
+				when "5"
+					[0, 0]
+				when "6"
+					[1, 0]
+				when "7"
+					[-1, -1]
+				when "8"
+					[0, -1]
+				when "9"
+					[1, -1]
+				when 27.chr
+					false
+				else
+					nil
+				end
+				break unless direction.nil?
+			end
+
+			direction
+		end
+
 		def select_square
-			queue_message("Select a location")
+			queue_message("Select a location.")
 			display_messages
 
 			coord_x = Game.player.x + Game.dungeon_level.offset_x
@@ -156,7 +191,7 @@ module Roguelike
 				when 'r'
 					Game.dungeon_level.reveal
 				when 'h'
-					Game.player.hug
+					Game.player.hug(select_direction)
 				when '>'
 					Game.player.descend
 				when '<'

@@ -1,6 +1,7 @@
 module Roguelike
 	class Point
 		attr_reader :x, :y, :map
+		attr_accessor :invisible
 
 		def initialize(map, x, y)
 			@x = x

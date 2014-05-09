@@ -22,6 +22,10 @@ module Roguelike
 			@name, @character, @color = name, character, color
 
 			map.add_movable(self)
+
+			listen_for(:hug, Game.player) do |me|
+				Dispatcher.queue_message("You hug the #{name}. What kind of freak are you?")
+			end
 		end
 
 		def walkable?

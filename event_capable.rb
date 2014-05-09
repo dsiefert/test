@@ -3,7 +3,7 @@ module Roguelike
 		def listen_for(event, sender = nil, &block)
 			event = event.to_sym
 			raise ArgumentError, "You must give a block when setting up an event listener" unless block_given?
-			
+
 			Event.listen(event, self, "event_#{event}", sender)
 
 			# don't try to send this to self.class! That'll effect everyone!

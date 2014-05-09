@@ -78,10 +78,15 @@ module Roguelike
 			Event.new(:sneeze, self)
 		end
 
-		def hug
-			Event.new(:hug, self, local: [x, y])
-
-			Dispatcher.queue_message("You pathetically hug yourself.") if Game.dungeon_level.movables(x, y).empty?
+		def hug(direction)
+			delta_x, delta_y = direction
+			if Event.new(:hug, self, local: [x + delta_x, y + delta_y]).unheard?
+				if direction == [0, 0]
+					Dispatcher.queue_message("You pathetically attempt to hug yourself.")
+				elsif Game.dungeon_level.movables(x + delta_x, y + delta_y).empty?
+					Dispatcher.queue_message("There is nothing there to hug!")
+				end
+			end
 		end
 
 		def descend

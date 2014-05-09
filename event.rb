@@ -27,7 +27,7 @@ module Roguelike
 			@@listeners.reject! do |l|
 				l.name == name &&
 				l.listener == listener &&
-				(sender.nil? || l.sender.nil? || l.sender === sender)
+				(sender.nil? || l.sender.nil? || l.sender == sender || l.sender === sender || sender === l.sender)
 			end
 		end
 
