@@ -353,10 +353,10 @@ module Roguelike
 				(room.y1 .. room.y2).each do |y|
 					Items::Item.new(self, x, y, "land mine", "^", 10, invisible: true)
 						.listen_for(:tread) do |me|
-							me.ignore(:tread)
 							me.invisible = false
 							Dispatcher.queue_message("You hear a thundering explosion!")
 							Event.new(:explode, me, local: [me.x, me.y])
+							me.listen_for(:tread, Roguelike::Player) { Dispatcher.queue_message("You step on an exploded land mine.") }
 						end
 				end
 			end
