@@ -348,13 +348,17 @@ module Roguelike
 			# populate the map with critters, toys, and staircases
 
 			Items::Staircase.new(self, *@unmarked_rooms.sample.mark.random_square, :down)
-			10.times do
-				Items::Item.new(self, *random_square(:empty?), "land mine", "^", 10, invisible: true)
-					.listen_for(:tread, Roguelike::Player) do |me|
-						me.ignore(:tread)
-						me.invisible = false
-						Dispatcher.queue_message("You step on a land mine. It explodes!", true)
-					end
+			room = @unmarked_rooms.sample.mark
+			(room.x1 .. room.x2).each do |x|
+				(room.y1 .. room.y2).each do |y|
+					Items::Item.new(self, x, y, "land mine", "^", 10, invisible: true)
+						.listen_for(:tread) do |me|
+							me.ignore(:tread)
+							me.invisible = false
+							Dispatcher.queue_message("You hear a thundering explosion!")
+							Event.new(:explode, me, local: [me.x, me.y])
+						end
+				end
 			end
 			Items::Item.new(self, *random_square(:empty?), "ampersand", "&", 12)
 				.listen_for(:tread, Roguelike::Player) do |me|
@@ -404,6 +408,9 @@ module Roguelike
 				end
 			end
 			Monster.new(self, *random_square(:empty?), "Canadian", "@", 6)
+				.listen_for(:explode) do
+					Dispatcher.queue_message("\"Oh, dear, things are exploding again!\" murmurs someone with a Canadian accent.", true)
+				end
 				.listen_for(:turn) do |me|
 					me.move
 				end
