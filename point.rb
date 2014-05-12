@@ -39,5 +39,9 @@ module Roguelike
 			$window.mvaddstr(@y + @map.offset_y, @x + @map.offset_x, @character[0])
 			$window.attroff(Ncurses::A_BOLD)
 		end
+
+		def visible?
+			map.square(x, y).visible?
+		end
 	end
 end

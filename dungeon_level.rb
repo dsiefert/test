@@ -385,7 +385,13 @@ module Roguelike
 				.listen_for(:hug, Roguelike::Player) do |me|
 					Dispatcher.queue_message("You hug the big red dildo, and it purrs happily.")
 					me.ignore(:tread)
-					me.listen_for(:sneeze, Roguelike::Player) { Dispatcher.queue_message("The big red dildo shouts, \"I LOVE YOU!\"") }
+					me.listen_for(:sneeze, Roguelike::Player) do |me|
+						if me.visible?
+							Dispatcher.queue_message("The big red dildo shouts, \"I LOVE YOU!\"")
+						else
+							Dispatcher.queue_message("You hear a distant shout. Was that the big red dildo?")
+						end
+					end
 				end
 				.listen_for(:descend, Roguelike::Player) do
 					Dispatcher.queue_message("'Descend'? Making a cheap little 'going-down' joke, are we?")
@@ -408,8 +414,12 @@ module Roguelike
 				end
 			end
 			Monster.new(self, *random_square(:empty?), "Canadian", "@", 6)
-				.listen_for(:explode) do
-					Dispatcher.queue_message("\"Oh, dear, things are exploding again!\" murmurs someone with a Canadian accent.", true)
+				.listen_for(:explode) do |me|
+					if me.visible?
+						Dispatcher.queue_message("\"Oh, dear, things are exploding again!\" mutters the Canadian fretfully.", true)
+					else
+						Dispatcher.queue_message("\"Oh, dear, things are exploding again!\" murmurs someone with a Canadian accent.", true)
+					end
 				end
 				.listen_for(:turn) do |me|
 					me.move
