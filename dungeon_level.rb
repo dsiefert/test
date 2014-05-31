@@ -11,13 +11,6 @@ module Roguelike
 	class DungeonLevel
 		include FOV
 
-		# has tiles
-		# has items
-		# 	including monsters
-		# 		including the PC
-		#
-		# probably has random dungeon map
-
 		ROOM_RATIO_HIGH = 0.30
 		ROOM_RATIO_LOW  = 0.20
 		LOOP_RATIO      = 0.10
@@ -25,16 +18,17 @@ module Roguelike
 		COLUMNS         = 78
 		ROWS            = 23
 
-		attr_reader :columns, :rows, :rooms, :corridors, :offset_y, :offset_x, :map_attempts, :up_square, :title
+		attr_reader :columns, :rows, :rooms, :corridors, :offset_y, :offset_x, :map_attempts, :up_square, :place
 		attr_accessor :depth, :unmarked_rooms
 
-		def initialize(title = "A mysterious dungeon", has_random_map = true)
+		def initialize(place, title = nil, has_random_map = true)
 			Event.new(:initialize, self)
 
+			@place          = place
 			@columns        = COLUMNS
 			@rows           = ROWS
 			@has_random_map = has_random_map
-			@title          = title.slice(0, 72)
+			@title          = title
 			@rooms          = []
 			@unmarked_rooms = []
 			@corridors      = []
@@ -91,7 +85,7 @@ module Roguelike
 			end
 
 			# and the title. note that we trim it to 72 max to allow three columns plus a space on either side
-			$window.mvaddstr(@offset_y - 1, 3, " #{title} ")
+			$window.mvaddstr(@offset_y - 1, 3, " #{title.slice(0, 72)} ")
 			$window.mvaddstr(@offset_y - 1, @offset_x + @columns - 2 - depth.to_s.length, " #{depth} ")
 
 			#items!
@@ -117,6 +111,10 @@ module Roguelike
 
 		def map
 			self
+		end
+
+		def title
+			@title || @place.title
 		end
 
 		def unoccupied?(x, y)

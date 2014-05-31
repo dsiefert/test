@@ -20,7 +20,7 @@ module Roguelike
 				Game.dungeon_level.draw
 
 				if !@destination
-					map = Roguelike::DungeonLevel.new(Game.dungeon_level.title)
+					map = Roguelike::DungeonLevel.new(Game.dungeon_level.place)
 					map.depth = Game.dungeon_level.depth + 1 if direction == :down
 					@destination = Roguelike::Items::Staircase.new(map, *map.unmarked_rooms.sample.mark.random_square, (direction == :down ? :up : :down), destination: self)
 				end
