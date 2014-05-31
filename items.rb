@@ -28,7 +28,7 @@ module Roguelike
 				Game.dungeon_level = @destination.map
 				Game.player.set_location(@destination.map, @destination.x, @destination.y)
 
-				Event.new(:enter, Game.player)
+				Event::Event.new(:enter, Game.player)
 			end
 		end
 	end

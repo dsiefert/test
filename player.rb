@@ -1,6 +1,6 @@
 module Roguelike
 	class Player < Point
-		include EventCapable
+		include ::Roguelike::Event::Capable
 		
 		def sight_radius
 			6
@@ -24,7 +24,7 @@ module Roguelike
 		def move(x_direction, y_direction)
 			return true if x_direction == 0 && y_direction == 0
 
-			Event.new("leave", self)
+			Event::Event.new("leave", self)
 
 			new_x = @x + x_direction
 			new_y = @y + y_direction
@@ -36,15 +36,15 @@ module Roguelike
 
 			if !Game.dungeon_level.walkable?(new_x, new_y)
 				Dispatcher.queue_message("Ouch, you bumped into a wall!") if Game.dungeon_level.square(new_x, new_y).transit_time.nil?
-				Event.new(:bump, self, local: [new_x, new_y])
+				Event::Event.new(:bump, self, local: [new_x, new_y])
 				return false
 			end
 
 			@x = new_x
 			@y = new_y
 
-			Event.new(:tread, self, local: [x, y])
-			Event.new(:move, self)
+			Event::Event.new(:tread, self, local: [x, y])
+			Event::Event.new(:move, self)
 		end
 
 		def teleport(x = nil, y = nil)
@@ -59,8 +59,8 @@ module Roguelike
 			@x, @y = x, y
 			Dispatcher.queue_message("You teleport!")
 
-			Event.new(:tread, self, local: [x, y])
-			Event.new(:teleport, self)
+			Event::Event.new(:tread, self, local: [x, y])
+			Event::Event.new(:teleport, self)
 		end
 
 		def controlled_teleport
@@ -75,12 +75,12 @@ module Roguelike
 
 		def sneeze
 			Dispatcher.queue_message("You sneeze.")
-			Event.new(:sneeze, self)
+			Event::Event.new(:sneeze, self)
 		end
 
 		def hug(direction)
 			delta_x, delta_y = direction
-			if Event.new(:hug, self, local: [x + delta_x, y + delta_y]).unheard?
+			if Event::Event.new(:hug, self, local: [x + delta_x, y + delta_y]).unheard?
 				if direction == [0, 0]
 					Dispatcher.queue_message("You pathetically attempt to hug yourself.")
 				elsif Game.dungeon_level.movables(x + delta_x, y + delta_y).empty?
@@ -90,18 +90,18 @@ module Roguelike
 		end
 
 		def descend
-			if Event.new(:descend, self, local: [x, y]).unheard?
+			if Event::Event.new(:descend, self, local: [x, y]).unheard?
 				Dispatcher.queue_message("You attempt to descend but there is nothing to descend.")
 			else
-				Event.new(:leave, self)
+				Event::Event.new(:leave, self)
 			end
 		end
 
 		def ascend
-			if Event.new(:ascend, self, local: [x, y]).unheard?
+			if Event::Event.new(:ascend, self, local: [x, y]).unheard?
 				Dispatcher.queue_message("What do you expect to climb, exactly?")
 			else
-				Event.new(:leave, self)
+				Event::Event.new(:leave, self)
 			end
 		end
 	end

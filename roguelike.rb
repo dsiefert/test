@@ -70,7 +70,7 @@ module Roguelike
 		Ncurses.endwin
 	end
 
-	# Event.summary.each { |e| puts e }
+	# Event::Event.summary.each { |e| puts e }
 	# puts dungeon_level.map_attempts
 	# puts dungeon_level.room_area
 	puts Game.end_message if Game.end_message

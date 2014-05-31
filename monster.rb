@@ -11,7 +11,7 @@ module Roguelike
 		# varying plurality and definiteness
 		# 	the Canadian, a Canadian, some Canadians, the Canadians
 
-		include EventCapable
+		include ::Roguelike::Event::Capable
 		
 		attr_reader :name
 		attr_accessor :color
@@ -47,7 +47,7 @@ module Roguelike
 				@x += x
 				@y += y
 
-				Event.new(:tread, self, local: [@x, @y])
+				Event::Event.new(:tread, self, local: [@x, @y])
 			end
 		end
 	end

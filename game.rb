@@ -1,5 +1,4 @@
-require_relative 'event'
-require_relative 'event_capable'
+require_relative 'event/event'
 require_relative 'place'
 require_relative 'dispatcher'
 require_relative 'player'
@@ -22,7 +21,7 @@ module Roguelike
 		end
 
 		def take_turn
-			Event.new(:turn, self)
+			::Roguelike::Event::Event.new(:turn, self)
 			Game.dungeon_level.draw
 			Dispatcher.handle($window.getch)
 		end

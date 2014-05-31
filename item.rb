@@ -5,7 +5,7 @@
 module Roguelike
 	module Items
 		class Item < Point
-			include EventCapable
+			include ::Roguelike::Event::Capable
 
 			attr_reader   :name
 			attr_accessor :color
@@ -36,7 +36,7 @@ module Roguelike
 			end
 
 			def remove
-				Event.forget_object(self)
+				Event::Event.forget_object(self)
 				map.remove_movable(self)
 			end
 		end

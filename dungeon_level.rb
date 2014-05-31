@@ -22,7 +22,7 @@ module Roguelike
 		attr_accessor :depth, :unmarked_rooms
 
 		def initialize(place, title = nil, has_random_map = true)
-			Event.new(:initialize, self)
+			Event::Event.new(:initialize, self)
 
 			@place          = place
 			@columns        = COLUMNS
@@ -47,7 +47,7 @@ module Roguelike
 			@offset_y = ((25 - @rows) / 2).floor
 
 			if has_random_map
-				Event.new(:create_start, self)
+				Event::Event.new(:create_start, self)
 				create_map
 			end
 
@@ -92,7 +92,7 @@ module Roguelike
 			@movables.each do |movable|
 				# TODO: Ensure monsters always draw after items
 				if square(movable.x, movable.y).visible? || (movable.is_a?(Items::Item) && square(movable.x, movable.y).remembered?)
-					Event.new(:see, Game.player, target: movable) if square(movable.x, movable.y).visible?
+					Event::Event.new(:see, Game.player, target: movable) if square(movable.x, movable.y).visible?
 					movable.draw unless movable.invisible
 				end
 			end
@@ -106,7 +106,7 @@ module Roguelike
 
 			# all done!
 			$window.refresh
-			Event.new(:draw_complete, self)
+			Event::Event.new(:draw_complete, self)
 		end
 
 		def map
@@ -353,7 +353,7 @@ module Roguelike
 						.listen_for(:tread) do |me|
 							me.invisible = false
 							Dispatcher.queue_message("You hear a thundering explosion!")
-							Event.new(:explode, me, local: [me.x, me.y])
+							Event::Event.new(:explode, me, local: [me.x, me.y])
 							me.listen_for(:tread, Roguelike::Player) { Dispatcher.queue_message("You step on an exploded land mine.") }
 						end
 				end
@@ -434,7 +434,7 @@ module Roguelike
 				end
 
 			# trigger event
-			return Event.new(:create_complete, self)
+			return Event::Event.new(:create_complete, self)
 		end
 
 		def add_room(coordinates = {})
