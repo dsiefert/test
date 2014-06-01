@@ -10,6 +10,7 @@ require_relative 'fov'
 module Roguelike
 	class DungeonLevel
 		include FOV
+		include Event::Capable
 
 		ROOM_RATIO_HIGH = 0.30
 		ROOM_RATIO_LOW  = 0.20
@@ -51,6 +52,10 @@ module Roguelike
 				create_map
 			end
 
+			listen_for(:enter, Roguelike::Player) do |me|
+				me.ignore(:enter)
+				Dispatcher.queue_message('These caves seem endless.')
+			end
 			self
 		end
 
