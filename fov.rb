@@ -62,7 +62,7 @@ module Roguelike
 			# scan top and bottom edges
 			[y_min, y_max].each do |y|
 				(x_min .. x_max).each do |x|
-					traverse_line(x, y)					
+					traverse_line(x, y)
 				end
 			end
 

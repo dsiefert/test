@@ -1,7 +1,7 @@
 module Roguelike
 	class Player < Point
 		include ::Roguelike::Event::Capable
-		
+
 		def sight_radius
 			6
 		end

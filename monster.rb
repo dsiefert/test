@@ -12,7 +12,7 @@ module Roguelike
 		# 	the Canadian, a Canadian, some Canadians, the Canadians
 
 		include ::Roguelike::Event::Capable
-		
+
 		attr_reader :name
 		attr_accessor :color
 

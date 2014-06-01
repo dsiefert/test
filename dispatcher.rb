@@ -97,7 +97,7 @@ module Roguelike
 			y_min = Game.level.offset_y
 			x_max = Game.level.columns - 1 + Game.level.offset_x
 			y_max = Game.level.rows - 1 + Game.level.offset_y
-			
+
 			done = false
 			while char = $window.getch
 				case char.chr
@@ -127,12 +127,12 @@ module Roguelike
 					done = true
 					coord_x, coord_y = [0, 0] # force it to choose a random character
 				end
-				
+
 				coord_x = [x_min, coord_x].max
 				coord_x = [x_max, coord_x].min
 				coord_y = [y_min, coord_y].max
 				coord_y = [y_max, coord_y].min
-				
+
 				$window.move(coord_y, coord_x)
 
 				break if done

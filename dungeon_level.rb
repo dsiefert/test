@@ -297,7 +297,7 @@ module Roguelike
 				# try drawing a corridor -- rinse and repeat if it's looped
 				join = room.add_join
 				start_x, start_y, direction = join.x, join.y, join.direction
-					
+
 				new_corridor = Corridor.new(start_x, start_y, direction, self) rescue nil
 
 				if new_corridor && new_corridor.looped && (Random.rand < LOOP_RATIO) && !room.loopy
