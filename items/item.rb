@@ -4,7 +4,7 @@
 
 module Roguelike
 	module Items
-		class Item < Point
+		class Item < ::Roguelike::Point
 			include ::Roguelike::Event::Capable
 
 			attr_reader   :name

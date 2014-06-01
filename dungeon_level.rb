@@ -2,8 +2,6 @@ require 'ncursesw'
 
 require_relative 'point'
 require_relative 'tile'
-require_relative 'item'
-require_relative 'items'
 require_relative 'monster'
 require_relative 'fov'
 
