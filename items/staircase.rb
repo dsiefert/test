@@ -17,15 +17,15 @@ module Roguelike
 
 			def climb
 				Dispatcher.queue_message("You climb the stairs . . .", true)
-				Game.dungeon_level.draw
+				Game.level.draw
 
 				if !@destination
-					map = Roguelike::DungeonLevel.new(Game.dungeon_level.place)
-					map.depth = Game.dungeon_level.depth + 1 if direction == :down
+					map = Roguelike::DungeonLevel.new(Game.level.place)
+					map.depth = Game.level.depth + 1 if direction == :down
 					@destination = Roguelike::Items::Staircase.new(map, *map.unmarked_rooms.sample.mark.random_square, (direction == :down ? :up : :down), destination: self)
 				end
 
-				Game.dungeon_level = @destination.map
+				Game.level = @destination.map
 				Game.player.set_location(@destination.map, @destination.x, @destination.y)
 
 				Event::Event.new(:enter, Game.player)

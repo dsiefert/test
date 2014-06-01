@@ -88,15 +88,15 @@ module Roguelike
 			queue_message("Select a location.")
 			display_messages
 
-			coord_x = Game.player.x + Game.dungeon_level.offset_x
-			coord_y = Game.player.y + Game.dungeon_level.offset_y
+			coord_x = Game.player.x + Game.level.offset_x
+			coord_y = Game.player.y + Game.level.offset_y
 
 			$window.move(coord_y, coord_x)
 
-			x_min = Game.dungeon_level.offset_x
-			y_min = Game.dungeon_level.offset_y
-			x_max = Game.dungeon_level.columns - 1 + Game.dungeon_level.offset_x
-			y_max = Game.dungeon_level.rows - 1 + Game.dungeon_level.offset_y
+			x_min = Game.level.offset_x
+			y_min = Game.level.offset_y
+			x_max = Game.level.columns - 1 + Game.level.offset_x
+			y_max = Game.level.rows - 1 + Game.level.offset_y
 			
 			done = false
 			while char = $window.getch
@@ -138,8 +138,8 @@ module Roguelike
 				break if done
 			end
 
-			coord_x -= Game.dungeon_level.offset_x
-			coord_y -= Game.dungeon_level.offset_y
+			coord_x -= Game.level.offset_x
+			coord_y -= Game.level.offset_y
 
 			[coord_x, coord_y]
 		end
@@ -189,7 +189,7 @@ module Roguelike
 				when 's'
 					Game.player.sneeze
 				when 'r'
-					Game.dungeon_level.reveal
+					Game.level.reveal
 				when 'h'
 					Game.player.hug(select_direction)
 				when '>'

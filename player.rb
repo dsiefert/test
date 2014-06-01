@@ -34,8 +34,8 @@ module Roguelike
 				return false
 			end
 
-			if !Game.dungeon_level.walkable?(new_x, new_y)
-				Dispatcher.queue_message("Ouch, you bumped into a wall!") if Game.dungeon_level.square(new_x, new_y).transit_time.nil?
+			if !Game.level.walkable?(new_x, new_y)
+				Dispatcher.queue_message("Ouch, you bumped into a wall!") if Game.level.square(new_x, new_y).transit_time.nil?
 				Event::Event.new(:bump, self, local: [new_x, new_y])
 				return false
 			end
@@ -49,12 +49,12 @@ module Roguelike
 
 		def teleport(x = nil, y = nil)
 			if x.nil?
-				x, y = Game.dungeon_level.random_square(:walkable?)
+				x, y = Game.level.random_square(:walkable?)
 			elsif y.nil?
 				x, y = x
 			end
 
-			return teleport unless Game.dungeon_level.walkable_except_player?(x, y)
+			return teleport unless Game.level.walkable_except_player?(x, y)
 
 			@x, @y = x, y
 			Dispatcher.queue_message("You teleport!")
@@ -65,9 +65,9 @@ module Roguelike
 
 		def controlled_teleport
 			x, y = Dispatcher.select_square
-			unless Game.dungeon_level.walkable_except_player?(x, y)
+			unless Game.level.walkable_except_player?(x, y)
 				Dispatcher.queue_message("Controlled teleportation fail!")
-				x, y = Game.dungeon_level.random_square(:walkable?)
+				x, y = Game.level.random_square(:walkable?)
 			end
 
 			teleport(x, y)
@@ -83,7 +83,7 @@ module Roguelike
 			if Event::Event.new(:hug, self, local: [x + delta_x, y + delta_y]).unheard?
 				if direction == [0, 0]
 					Dispatcher.queue_message("You pathetically attempt to hug yourself.")
-				elsif Game.dungeon_level.movables(x + delta_x, y + delta_y).empty?
+				elsif Game.level.movables(x + delta_x, y + delta_y).empty?
 					Dispatcher.queue_message("There is nothing there to hug!")
 				end
 			end

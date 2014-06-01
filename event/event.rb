@@ -62,7 +62,7 @@ module Roguelike
 				listeners = @@listeners.dup
 				if !options.empty?
 					if (coords = options.delete(:local))
-						listeners.select!{ |l| Game.dungeon_level.movables(coords).include?(l.listener) }
+						listeners.select!{ |l| Game.level.movables(coords).include?(l.listener) }
 					end
 
 					if (target = options.delete(:target))

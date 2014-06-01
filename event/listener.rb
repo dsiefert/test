@@ -11,7 +11,7 @@ module Roguelike
 			end
 
 			def alert(sender, event)
-				if @listener.map == Game.dungeon_level && (@sender.nil? || @sender === sender)
+				if @listener.map == Game.level && (@sender.nil? || @sender === sender)
 					@listener.send(@callback, sender)
 					event.hear
 				end
