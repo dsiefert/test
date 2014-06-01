@@ -22,7 +22,7 @@ module Roguelike
 		attr_reader :columns, :rows, :rooms, :corridors, :offset_y, :offset_x, :map_attempts, :up_square, :place
 		attr_accessor :depth, :unmarked_rooms
 
-		def initialize(place, title = nil, map = nil)
+		def initialize(place, title = nil, map = nil, options = {})
 			Event::Event.new(:initialize, self)
 
 			@place          = place
@@ -50,12 +50,15 @@ module Roguelike
 			if !@custom_map
 				Event::Event.new(:create_start, self)
 				create_map
+			else
+				create_tiles
 			end
 
 			listen_for(:enter, Roguelike::Player) do |me|
 				me.ignore(:enter)
 				Dispatcher.queue_message('These caves seem endless.')
 			end
+
 			self
 		end
 
@@ -549,24 +552,32 @@ module Roguelike
 		end
 
 		def create_tiles
-			rows.times do |y|
-				columns.times do |x|
-					if x == 0 || x == columns - 1 || y == 0 || y == rows - 1
-						type = :hard_rock
-					else
-						type =
-							case tile_type(x, y)
-								when true
-									:dirt
-								when 1
-									:obsidian
-								when 2
-									:moss
-								when false
-									:soft_rock
-							end
+			if !@custom_map
+				rows.times do |y|
+					columns.times do |x|
+						if x == 0 || x == columns - 1 || y == 0 || y == rows - 1
+							type = :hard_rock
+						else
+							type =
+								case tile_type(x, y)
+									when true
+										:dirt
+									when 1
+										:obsidian
+									when 2
+										:moss
+									when false
+										:soft_rock
+								end
+						end
+						@tiles[x][y] = Tile.new(self, x, y, type)
 					end
-					@tiles[x][y] = (Tile.new(self, x, y, type))
+				end
+			else
+				rows.times do |y|
+					columns.times do |x|
+						@tiles[x][y] = Tile.new(self, x, y, @custom_map[x][y])
+					end
 				end
 			end
 		end

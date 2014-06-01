@@ -14,6 +14,7 @@ module Roguelike
 			dirt:      {character: '.', color: 8, transit_time: 1, opaque: false},
 			grass:     {character: '"', color: 3, transit_time: 1, opaque: false},
 			moss:      {character: '.', color: 3, transit_time: 1, opaque: false},
+			tree:      {character: 'T', color: 3, transit_time: 1.25, opaque: false},
 			obsidian:  {character: '.', color: 9, transit_time: 1, opaque: false},
 			rubble:    {character: '*', color: 9, transit_time: 5, opaque: false}
 		}
@@ -23,6 +24,8 @@ module Roguelike
 			super(map, x, y)
 
 			raise Error, "Unknown tile type: #{type}" if @@tile_types[type].nil?
+
+			type = @@tile_types.to_a[type][0] if type.is_a?(Integer)
 
 			@type         = type
 			@color        = @@tile_types[type][:color]
