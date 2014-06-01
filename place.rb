@@ -21,9 +21,9 @@ module Roguelike
 
 		attr_reader :title
 
-		def initialize(title = nil, initial_level = nil)
-			@title         = title || TITLES.sample
-			@initial_level = initial_level
+		def initialize(options = {})
+			@title         = options.delete(:title) || TITLES.sample
+			@initial_level = options.delete(:initial_level)
 		end
 
 		def initial_level
