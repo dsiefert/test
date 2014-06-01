@@ -21,13 +21,13 @@ module Roguelike
 		attr_reader :columns, :rows, :rooms, :corridors, :offset_y, :offset_x, :map_attempts, :up_square, :place
 		attr_accessor :depth, :unmarked_rooms
 
-		def initialize(place, title = nil, has_random_map = true)
+		def initialize(place, title = nil, map = nil)
 			Event::Event.new(:initialize, self)
 
 			@place          = place
 			@columns        = COLUMNS
 			@rows           = ROWS
-			@has_random_map = has_random_map
+			@custom_map     = map
 			@title          = title
 			@rooms          = []
 			@unmarked_rooms = []
@@ -46,7 +46,7 @@ module Roguelike
 			@offset_x = ((80 - @columns) / 2).floor
 			@offset_y = ((25 - @rows) / 2).floor
 
-			if has_random_map
+			if !@custom_map
 				Event::Event.new(:create_start, self)
 				create_map
 			end
@@ -315,32 +315,13 @@ module Roguelike
 				end
 
 				if (room_area / (rows * columns).to_f) > room_ratio
-					# make some tiles -- iterate over rows, then each value within each row
-					rows.times do |y|
-						columns.times do |x|
-							if x == 0 || x == columns - 1 || y == 0 || y == rows - 1
-								type = :hard_rock
-							else
-								type =
-									case tile_type(x, y)
-										when true
-											:dirt
-										when 1
-											:obsidian
-										when 2
-											:moss
-										when false
-											:soft_rock
-									end
-							end
-							@tiles[x][y] = (Tile.new(self, x, y, type))
-						end
-					end
+					create_tiles
 
 					break
 				end
 			end
 
+			# if even after ROOM_ATTEMPTS tries, we still don't have enough room area . . .
 			return create_map if (room_area / (rows * columns).to_f) < room_ratio
 
 			# populate the map with critters, toys, and staircases
@@ -560,6 +541,29 @@ module Roguelike
 
 			# couldn't make a room! sad!
 			false
+		end
+
+		def create_tiles
+			rows.times do |y|
+				columns.times do |x|
+					if x == 0 || x == columns - 1 || y == 0 || y == rows - 1
+						type = :hard_rock
+					else
+						type =
+							case tile_type(x, y)
+								when true
+									:dirt
+								when 1
+									:obsidian
+								when 2
+									:moss
+								when false
+									:soft_rock
+							end
+					end
+					@tiles[x][y] = (Tile.new(self, x, y, type))
+				end
+			end
 		end
 
 		def tile_type(x, y)
