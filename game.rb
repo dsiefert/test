@@ -10,18 +10,13 @@ module Roguelike
 		module_function
 
 		class << self
-			attr_accessor :dungeon_level, :player
 			attr_reader :player
 			attr_accessor :level
 		end
 
 		def start
 			Game.player = Player.new
-			dungeon_level = Roguelike::DungeonLevel.new(Place.new)
-			dungeon_level.depth = 1
-			Game.dungeon_level = dungeon_level
-			Game.player.set_location(dungeon_level, dungeon_level.unmarked_rooms.sample.mark.random_square)
-			dungeon_level.draw
+			level = Place.new.initial_level
 			level.depth = 1
 			Game.level = level
 			Game.player.set_location(level, level.unmarked_rooms.sample.mark.random_square)
@@ -31,7 +26,6 @@ module Roguelike
 
 		def take_turn
 			::Roguelike::Event::Event.new(:turn, self)
-			Game.dungeon_level.draw
 			Game.level.draw
 			Dispatcher.handle($window.getch)
 		end
@@ -43,7 +37,6 @@ module Roguelike
 		def over!(message = nil)
 			@over = true
 
-			dungeon_level.draw(false)
 			level.draw(false)
 
 			message ||= "Game over. Waah waah waah."

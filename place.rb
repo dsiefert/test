@@ -19,10 +19,11 @@ module Roguelike
 			"An undisclosed location"
 		]
 
-		attr_reader :title
+		attr_reader :title, :initial_level
 
-		def initialize(title = nil)
+		def initialize(title = nil, initial_level = nil)
 			@title = title || TITLES.sample
+			@initial_level ||= Roguelike::DungeonLevel.new(self)
 		end
 	end
 end
