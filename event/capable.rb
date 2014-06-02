@@ -21,6 +21,11 @@ module Roguelike
 
 				self
 			end
+
+			# TODO store map of event to block to eliminate need to declare a new method
+			# per listener and thereby allow multiple listeners for the same event name
+			def event_triggered(event)
+			end
 		end
 	end
 end
