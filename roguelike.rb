@@ -19,6 +19,12 @@ module Roguelike
 	end
 
 	farewell_messages = [
+		"Godspeed!",
+		"Been real.",
+		"Smell ya later.",
+		"God save the queen!",
+		"Confusion to your enemies!",
+		"May death come swiftly to your enemies.",
 		"Live long and prosper.",
 		"May the force be with you.",
 		"May the wind be ever at your back.",
