@@ -9,6 +9,8 @@ module Roguelike
 		"Don't bother looking for the Amulet of Yendor.",
 		"Don't be intimidated. It's only magic.",
 		"I've heard that Elves are into nudism.",
-		"A goblin told me there's a wand of infinite wishes just down the stairs."
+		"A goblin told me there's a wand of infinite wishes just down the stairs.",
+		"I've heard that Dwarves are into black metal.",
+		"I've heard that Humans are mostly pretty fat."
 	]
 end
