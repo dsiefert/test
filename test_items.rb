@@ -2,10 +2,11 @@ module Roguelike
 	module TestItems
 		def populate_map
 			add_movable(Items::Staircase.new(*@unmarked_rooms.sample.mark.random_square, :down))
+
 			room = @unmarked_rooms.sample.mark
 			(room.x1 .. room.x2).each do |x|
 				(room.y1 .. room.y2).each do |y|
-					Items::Item.new(x, y, "land mine", "^", 10, invisible: true)
+					add_movable(Items::Item.new(x, y, "land mine", "^", 10, invisible: true))
 						.listen_for(:tread) do |me|
 							me.invisible = false
 							Dispatcher.queue_message("You hear a thundering explosion!")

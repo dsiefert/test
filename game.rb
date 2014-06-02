@@ -25,7 +25,7 @@ module Roguelike
 		end
 
 		def take_turn
-			::Roguelike::Event::Event.new(:turn, self)
+			Event::Event.new(:turn, self)
 			Game.level.draw
 			Dispatcher.handle($window.getch)
 		end
