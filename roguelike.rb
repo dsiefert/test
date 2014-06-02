@@ -75,4 +75,7 @@ module Roguelike
 	# puts dungeon_level.room_area
 	puts Game.end_message if Game.end_message
 	puts farewell_messages.sample
+
+# require 'yaml'
+# puts "\n" + YAML::dump(Game.instance)
 end
