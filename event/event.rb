@@ -9,8 +9,8 @@ module Roguelike
 			# TODO: **IMPORTANT** Figure out a way to register multiple event handler methods on an
 			# object that listens for the same event on multiple types.
 
-			@@log       = []
-			@@summary   = []
+			# @@log       = []
+			# @@summary   = []
 			@@listeners = []
 
 			attr_reader :event_name, :sender, :time, :offset
@@ -53,11 +53,11 @@ module Roguelike
 				@event_name = event_name.to_sym
 				@sender = sender
 				@time = Time.now
-				@offset = @@log.last ? Time.now - @@log.last.time : 0.0
+				# @offset = @@log.last ? Time.now - @@log.last.time : 0.0
 				@unheard = true
 
-				@@log.push(self)
-				@@summary.push("#{event_name}, by #{sender.class} (#{sender.object_id}) at #{@time} (#{@offset})")
+				# @@log.push(self)
+				# @@summary.push("#{event_name}, by #{sender.class} (#{sender.object_id}) at #{@time} (#{@offset})")
 
 				listeners = @@listeners.dup
 				if !options.empty?
