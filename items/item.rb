@@ -10,12 +10,10 @@ module Roguelike
 			attr_reader   :name
 			attr_accessor :color
 
-			def initialize(map, x, y, name, character, color, params = {}) #will later add type or something
-				super(map, x, y)
+			def initialize(x, y, name, character, color, params = {}) #will later add type or something
+				super(x, y)
 
 				@name, @character, @color = name, character, color
-
-				map.add_movable(self)
 
 				listen_for(:tread, Game.player) { Dispatcher.queue_message("You step on a #{name}!") }
 
@@ -37,7 +35,7 @@ module Roguelike
 
 			def remove
 				Event::Event.forget_object(self)
-				map.remove_movable(self)
+				Game.level.remove_movable(self)
 			end
 		end
 	end

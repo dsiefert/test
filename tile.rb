@@ -20,8 +20,8 @@ module Roguelike
 		}
 		@@tile_types.freeze
 
-		def initialize(map, x, y, type)
-			super(map, x, y)
+		def initialize(x, y, type)
+			super(x, y)
 
 			raise Error, "Unknown tile type: #{type}" if @@tile_types[type].nil?
 
@@ -58,7 +58,7 @@ module Roguelike
 
 			(-1 .. 1).each do |x|
 				(-1 .. 1).each do |y|
-					return light if @map.square(@x + x, @y + y).transit_time
+					return light if Game.level.square(@x + x, @y + y).transit_time
 				end
 			end
 		end

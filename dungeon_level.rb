@@ -168,7 +168,8 @@ module Roguelike
 			[x, y]
 		end
 
-		def movables(x, y = nil)
+		def movables(x = nil, y = nil)
+			return @movables unless x
 			x, y = x unless y
 
 			@movables.select{ |m| m.x == x && m.y == y }
@@ -219,6 +220,7 @@ module Roguelike
 
 		def add_movable(movable)
 			@movables << movable
+			movable
 		end
 
 		def remove_movable(movable)
@@ -482,13 +484,13 @@ module Roguelike
 										:soft_rock
 								end
 						end
-						@tiles[x][y] = Tile.new(self, x, y, type)
+						@tiles[x][y] = Tile.new(x, y, type)
 					end
 				end
 			else
 				rows.times do |y|
 					columns.times do |x|
-						@tiles[x][y] = Tile.new(self, x, y, @custom_map[x][y])
+						@tiles[x][y] = Tile.new(x, y, @custom_map[x][y])
 					end
 				end
 			end

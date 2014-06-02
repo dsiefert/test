@@ -19,7 +19,7 @@ module Roguelike
 			level = Place.new.initial_level
 			level.depth = 1
 			Game.level = level
-			Game.player.set_location(level, level.unmarked_rooms.sample.mark.random_square)
+			Game.player.set_location(level.unmarked_rooms.sample.mark.random_square)
 			level.draw
 			Event::Event.new(:enter, Game.player)
 		end

@@ -11,11 +11,10 @@ module Roguelike
 			@color = 16
 		end
 
-		def set_location(map, x, y = nil)
+		def set_location(x, y = nil)
 			x, y = x unless y
 
-			return false if !map.is_a?(Roguelike::DungeonLevel)
-			@map, @x, @y = map, x, y
+			@x, @y = x, y
 		end
 
 		# we got the moves
@@ -29,7 +28,7 @@ module Roguelike
 			new_x = @x + x_direction
 			new_y = @y + y_direction
 
-			if new_x < 0 || new_y < 0 || new_x > @map.columns - 1 || new_y > @map.rows - 1
+			if new_x < 0 || new_y < 0 || new_x > Game.level.columns - 1 || new_y > Game.level.rows - 1
 				Dispatcher.queue_message("Ouch, you bumped into the edge of the universe!")
 				return false
 			end

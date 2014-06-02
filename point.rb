@@ -1,15 +1,11 @@
 module Roguelike
 	class Point
-		attr_reader :x, :y, :map
+		attr_reader :x, :y
 		attr_accessor :invisible
 
-		def initialize(map, x, y)
+		def initialize(x, y)
 			@x = x
 			@y = y
-
-			raise Error, "Map not specified" if !map.is_a?(Roguelike::DungeonLevel)
-
-			@map = map
 		end
 
 		def location
@@ -21,11 +17,11 @@ module Roguelike
 				raise Error, "Required attribute not set. Cannot draw point: #{@x}, #{@y} (Character: #{@character}, color: #{@color})"
 			end
 
-			if !@x.is_a?(Fixnum) || @x < 0 || @x >= @map.columns
+			if !@x.is_a?(Fixnum) || @x < 0 || @x >= Game.level.columns
 				raise Error, "Specified x value out of bounds. Cannot draw point: #{@x}, #{@y}"
 			end
 
-			if !@y.is_a?(Fixnum) || @y < 0 || @y >= @map.rows
+			if !@y.is_a?(Fixnum) || @y < 0 || @y >= Game.level.rows
 				raise Error, "Specified y value out of bounds. Cannot draw point: #{@x}, #{@y}"
 			end
 
@@ -36,12 +32,12 @@ module Roguelike
 			end
 
 			$window.attron(Ncurses::COLOR_PAIR(color))
-			$window.mvaddstr(@y + @map.offset_y, @x + @map.offset_x, @character[0])
+			$window.mvaddstr(@y + Game.level.offset_y, @x + Game.level.offset_x, @character[0])
 			$window.attroff(Ncurses::A_BOLD)
 		end
 
 		def visible?
-			map.square(x, y).visible?
+			Game.level.square(x, y).visible?
 		end
 	end
 end

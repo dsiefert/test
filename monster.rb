@@ -16,12 +16,10 @@ module Roguelike
 		attr_reader :name
 		attr_accessor :color
 
-		def initialize(map, x, y, name, character, color) #will later add type or something
-			super(map, x, y)
+		def initialize(x, y, name, character, color) #will later add type or something
+			super(x, y)
 
 			@name, @character, @color = name, character, color
-
-			map.add_movable(self)
 
 			listen_for(:hug, Game.player) do |me|
 				Dispatcher.queue_message("You hug the #{name}. What kind of freak are you?")
@@ -43,7 +41,7 @@ module Roguelike
 			end
 			x, y = x if y.nil?
 
-			if @map.walkable?(@x + x, @y + y)
+			if Game.level.walkable?(@x + x, @y + y)
 				@x += x
 				@y += y
 
