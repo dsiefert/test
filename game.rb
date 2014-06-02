@@ -6,12 +6,28 @@ require_relative 'dispatcher'
 require_relative 'player'
 
 module Roguelike
-	module Game
-		module_function
+	class Game
+		attr_reader :player
+		attr_accessor :level
 
-		class << self
-			attr_reader :player
-			attr_accessor :level
+		def self.method_missing(method, *args, &block)
+			if self.instance.respond_to?(method)
+				self.instance.send(method, *args, &block)
+			else
+				super
+			end
+		end
+
+		def self.to_yaml
+			self.instance.to_yaml
+		end
+
+		def self.respond_to?(method)
+			self.instance.respond_to?(method) || super
+		end
+
+		def self.instance
+			@instance ||= Game.new
 		end
 
 		def start
@@ -40,7 +56,6 @@ module Roguelike
 			level.draw(false)
 
 			message ||= "Game over. Waah waah waah."
-
 			Dispatcher.queue_message(message, true)
 		end
 
