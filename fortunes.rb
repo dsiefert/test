@@ -8,9 +8,12 @@ module Roguelike
 		"Death is the only thing you find easily in the dungeons.",
 		"Don't bother looking for the Amulet of Yendor.",
 		"Don't be intimidated. It's only magic.",
-		"I've heard that Elves are into nudism.",
 		"A goblin told me there's a wand of infinite wishes just down the stairs.",
-		"I've heard that Dwarves are into black metal.",
-		"I've heard that Humans are into eating."
+		"They say that Elves are into nudism.",
+		"They say that Dwarves are into black metal.",
+		"They say that Humans are into wine.",
+		"There is hidden treasure nearby.",
+		"You will die in a particularly undignified manner.",
+		"They say that magic is disappearing from the world."
 	]
 end
