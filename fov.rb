@@ -5,12 +5,14 @@ module Roguelike
 			points = line(Game.player.x, Game.player.y, x, y)
 			points.each do |point|
 				s = square(point)
+
 				x_sq = (s.x - Game.player.x)**2
 				y_sq = (s.y - Game.player.y)**2
+				return if x_sq + y_sq > @rad_sq
+
 				s.light
 
-				return if s.opaque?
-				return if x_sq + y_sq >= @rad_sq
+				return if s.opaque? && [s.x, s.y] != [Game.player.x, Game.player.y]
 			end
 		end
 
