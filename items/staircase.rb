@@ -8,7 +8,7 @@ module Roguelike
 				super(x, y, "staircase", char, 8, options.merge(direction: direction))
 
 				listen_for(:tread, Game.player) do
-					Dispatcher.queue_message(direction == :up ? "A staircase bringing you tantalizingly closer to the light." : "A staircase leading even deeper into the bowels of the earth.")
+					Dispatcher.queue_message(direction == :up ? "A staircase leading up." : "A staircase leading down.")
 				end
 
 				listen_for(:descend, Game.player) { climb } if direction == :down
@@ -22,6 +22,13 @@ module Roguelike
 				if !@destination
 					map = Roguelike::DungeonLevel.new(Game.level.place)
 					map.depth = Game.level.depth + 1 if direction == :down
+					@destination_map = map
+					@destination = Roguelike::Items::Staircase.new(*map.unmarked_rooms.sample.mark.random_square, (direction == :down ? :up : :down), destination: self, destination_map: Game.level)
+					@destination_map.add_movable(@destination)
+				end
+
+				if @destination.is_a?(Roguelike::Place)
+					map = Roguelike::DungeonLevel.new(@destination)
 					@destination_map = map
 					@destination = Roguelike::Items::Staircase.new(*map.unmarked_rooms.sample.mark.random_square, (direction == :down ? :up : :down), destination: self, destination_map: Game.level)
 					@destination_map.add_movable(@destination)
