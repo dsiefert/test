@@ -8,7 +8,7 @@ module Roguelike
 
 				x_sq = (s.x - Game.player.x)**2
 				y_sq = (s.y - Game.player.y)**2
-				return if x_sq + y_sq > @rad_sq
+				return if x_sq + y_sq > @rad_sq + 1
 
 				s.light
 
