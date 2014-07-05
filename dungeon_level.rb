@@ -20,7 +20,8 @@ module Roguelike
 		ROWS            = 23
 
 		attr_reader :columns, :rows, :rooms, :corridors, :offset_y, :offset_x, :map_attempts, :up_square, :place
-		attr_accessor :depth, :unmarked_rooms
+		attr_writer :depth
+		attr_accessor :unmarked_rooms
 
 		def initialize(place, title = nil, map = nil, options = {})
 			Event::Event.new(:initialize, self)
@@ -117,6 +118,10 @@ module Roguelike
 			Event::Event.new(:draw_complete, self)
 		end
 
+		def depth
+			@depth ||= 1
+		end
+
 		def map
 			self
 		end
@@ -179,7 +184,7 @@ module Roguelike
 			x, y = x unless y
 
 			# return something that resembles a tile if given out-of-bounds values, for FOV calculation
-			return FakeTile.instance unless (0 .. (columns - 1)).include?(x) && (0 .. (rows - 1)).include?(y)
+			return FakeTile.instance(x, y) unless (0 .. (columns - 1)).include?(x) && (0 .. (rows - 1)).include?(y)
 
 			@tiles[x][y]
 		end

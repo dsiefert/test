@@ -4,6 +4,7 @@ require_relative 'items/items'
 require_relative 'place'
 require_relative 'dispatcher'
 require_relative 'player'
+require_relative 'data/game_initializer'
 
 module Roguelike
 	class Game
@@ -32,10 +33,9 @@ module Roguelike
 
 		def start
 			Game.player = Player.new
-			level = Place.new.initial_level
-			level.depth = 1
+			level = GameInitializer.level
 			Game.level = level
-			Game.player.set_location(level.unmarked_rooms.sample.mark.random_square)
+			Game.player.set_location(GameInitializer.starting_coordinates)
 			level.draw
 			Event::Event.new(:enter, Game.player)
 		end

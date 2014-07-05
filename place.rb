@@ -20,6 +20,7 @@ module Roguelike
 		]
 
 		attr_reader :title
+		attr_writer :initial_level
 
 		def initialize(options = {})
 			@title         = options.delete(:title) || TITLES.sample

@@ -23,7 +23,7 @@ module Roguelike
 		def initialize(x, y, type)
 			super(x, y)
 
-			raise Error, "Unknown tile type: #{type}" if @@tile_types[type].nil?
+			raise Error, "Unknown tile type: #{type}" if !type.is_a?(Integer) && @@tile_types[type].nil?
 
 			type = @@tile_types.to_a[type][0] if type.is_a?(Integer)
 
@@ -72,9 +72,15 @@ module Roguelike
 		end
 	end
 
-	class FakeTile
-		def self.instance
-			@@fake_tile ||= new
+	class FakeTile < Point
+		@@fake_tile = nil
+		attr_writer :x, :y
+
+		def self.instance(x, y)
+			@@fake_tile = new(x, y) unless @@fake_tile
+			@@fake_tile.x, @@fake_tile.y = [x, y]
+
+			@@fake_tile
 		end
 
 		def light; end
