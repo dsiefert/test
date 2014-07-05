@@ -15,6 +15,7 @@ module Roguelike
 			x, y = x unless y
 
 			@x, @y = x, y
+			Event::Event.new(:tread, self, local: [x, y])
 		end
 
 		# we got the moves

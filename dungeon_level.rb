@@ -55,9 +55,11 @@ module Roguelike
 				create_tiles
 			end
 
-			listen_for(:enter, Roguelike::Player) do |me|
-				me.ignore(:enter)
-				Dispatcher.queue_message('These caves seem endless.')
+			unless @custom_map
+				listen_for(:enter, Roguelike::Player) do |me|
+					me.ignore(:enter)
+					Dispatcher.queue_message('These caves seem endless.')
+				end
 			end
 
 			self
