@@ -9,6 +9,19 @@ module Roguelike
 			attr_reader :message_queue, :message_log
 		end
 
+		def wait
+			until [10,13,27,32].include?($window.getch) do; end
+		end
+
+		def message_box(text, center, rows)
+			$window.attron(Ncurses::A_BOLD)
+			$window.attron(Ncurses::COLOR_PAIR(9))
+			$window.mvaddstr(1, 1, text)
+			$window.attroff(Ncurses::A_BOLD)
+
+			wait
+		end
+
 		def queue_message(text, force_acknowledgment = false)
 			message_queue << Message.new(text, force_acknowledgment)
 
@@ -37,7 +50,7 @@ module Roguelike
 				if message.force_acknowledgment || Game.over?
 					$window.addstr(" (paused)")
 					paused = true
-					until [10,13,27,32].include?($window.getch) do; end
+					wait
 				end
 
 				row += 1
@@ -196,6 +209,8 @@ module Roguelike
 					Game.player.descend
 				when '<'
 					Game.player.ascend
+				when '@'
+					message_box("test", false, false)
 				else
 					queue_message("Pressed #{char}")
 				end

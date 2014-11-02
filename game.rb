@@ -33,10 +33,9 @@ module Roguelike
 
 		def start
 			Game.player = Player.new
-			level = GameInitializer.level
-			Game.level = level
+			Game.level = GameInitializer.level
 			Game.player.set_location(GameInitializer.starting_coordinates)
-			level.draw
+			Game.level.draw
 			Event::Event.new(:enter, Game.player)
 		end
 

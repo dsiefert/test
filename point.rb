@@ -26,7 +26,7 @@ module Roguelike
 			end
 
 			color = @color
-			if color > 8
+			if color % 16 > 8
 				color -= 8
 				$window.attron(Ncurses::A_BOLD)
 			end
