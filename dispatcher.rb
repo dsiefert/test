@@ -14,9 +14,10 @@ module Roguelike
 		end
 
 		def message_box(text, center = false)
-			cols = 60
+			max_cols = 60
+			max_rows = 17
 
-			# create lines of text -- up to cols characters per line
+			# create lines of text -- up to max_cols characters per line
 			lines = []
 			paragraphs = text.split("\n").map(&:strip)
 			paragraphs.each do |paragraph|
@@ -24,7 +25,7 @@ module Roguelike
 				line = ""
 				while !words.empty?
 					word = words.shift
-					if line.length + word.length + 1 < cols then
+					if line.length + word.length + 1 < max_cols then
 						line = line + " " + word
 						line.strip!
 					else
@@ -36,8 +37,8 @@ module Roguelike
 				line = ""
 			end
 
-			dialog_length = [lines.length, 17].min
-			left_edge = (80 - cols) / 2 - 2
+			dialog_length = [lines.length, max_rows].min
+			left_edge = (80 - max_cols) / 2 - 2
 
 			$window.attron(Ncurses::A_BOLD)
 			$window.attron(Ncurses::COLOR_PAIR(10))
@@ -46,10 +47,10 @@ module Roguelike
 			top_row = 12 - (dialog_length / 2) - 2
 			rows = top_row .. top_row + dialog_length + 3
 			rows.each do |row|
-				$window.mvaddstr(row, left_edge, "*" + (" " * (cols + 2)) + "*")
+				$window.mvaddstr(row, left_edge, "*" + (" " * (max_cols + 2)) + "*")
 			end
-			$window.mvaddstr(rows.first, left_edge, "*" * (cols + 4))
-			$window.mvaddstr(rows.last, left_edge, "*" * (cols + 4))
+			$window.mvaddstr(rows.first, left_edge, "*" * (max_cols + 4))
+			$window.mvaddstr(rows.last, left_edge, "*" * (max_cols + 4))
 			$window.attroff(Ncurses::A_BOLD)
 
 			# text
