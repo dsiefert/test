@@ -36,23 +36,27 @@ module Roguelike
 				line = ""
 			end
 
-			# $window.attron(Ncurses::A_BOLD)
-			$window.attron(Ncurses::COLOR_PAIR(9))
+			dialog_length = [lines.length, 17].min
+			left_edge = (80 - cols) / 2 - 2
+
+			$window.attron(Ncurses::A_BOLD)
+			$window.attron(Ncurses::COLOR_PAIR(10))
 			# erase area, including two character padding around entire text area
 			# draw frame
-			top_row = 12 - (lines.length / 2) - 2
-			rows = top_row .. top_row + lines.length + 3
+			top_row = 12 - (dialog_length / 2) - 2
+			rows = top_row .. top_row + dialog_length + 3
 			rows.each do |row|
-				$window.mvaddstr(row, 8, "*" + (" " * (cols + 2)) + "*")
+				$window.mvaddstr(row, left_edge, "*" + (" " * (cols + 2)) + "*")
 			end
-			$window.mvaddstr(rows.first, 8, "*" * (cols + 4))
-			$window.mvaddstr(rows.last, 8, "*" * (cols + 4))
+			$window.mvaddstr(rows.first, left_edge, "*" * (cols + 4))
+			$window.mvaddstr(rows.last, left_edge, "*" * (cols + 4))
 			$window.attroff(Ncurses::A_BOLD)
 
 			# text
 			$window.attron(Ncurses::COLOR_PAIR(10))
 			lines.each_with_index do |l, offset|
-				col = center ? 40 - l.length / 2 : 10
+				break if offset + 1 > dialog_length
+				col = center ? 40 - l.length / 2 : left_edge + 2
 				$window.mvaddstr(top_row + 2 + offset, col, l)
 			end
 
@@ -250,7 +254,7 @@ module Roguelike
 				when '<'
 					Game.player.ascend
 				when '@'
-					message_box("a smattering of popsicles\nthe churlish screams of a thousand churlish bees filled the air on a warm summer evening in the coldest place in the solar system\n\nlove,\nthe prince", true)
+					message_box("you pick up the ancient manuscript and begin to puzzle out the old-fashioned script\n\nthere will be few survivors\nand our only god shall be oprah\nand our fear of her shall be matched only by our adoration of her\nwe shall despair in her absence and cower in her presence and all that she decrees shall be done\n\na smattering of popsicles\n\nthe churlish screams of a thousand churlish bees filled the air on a warm summer evening in the coldest place in the solar system\n\nlove,\nthe prince")
 				else
 					queue_message("Pressed #{char}")
 				end
