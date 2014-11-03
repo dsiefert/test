@@ -17,7 +17,7 @@ module Roguelike
 			max_cols = 60
 			max_rows = 17
 
-			# create lines of text -- up to max_cols characters per line
+			# create lines of text -- up to dialog_width characters per line
 			lines = []
 			paragraphs = text.split("\n").map(&:strip)
 			paragraphs.each do |paragraph|
@@ -37,8 +37,9 @@ module Roguelike
 				line = ""
 			end
 
+			dialog_width = center ? lines.map(&:length).max : max_cols
 			dialog_length = [lines.length, max_rows].min
-			left_edge = (80 - max_cols) / 2 - 2
+			left_edge = (80 - dialog_width) / 2 - 2
 
 			$window.attron(Ncurses::A_BOLD)
 			$window.attron(Ncurses::COLOR_PAIR(10))
@@ -47,17 +48,17 @@ module Roguelike
 			top_row = 12 - (dialog_length / 2) - 2
 			rows = top_row .. top_row + dialog_length + 3
 			rows.each do |row|
-				$window.mvaddstr(row, left_edge, "*" + (" " * (max_cols + 2)) + "*")
+				$window.mvaddstr(row, left_edge, "*" + (" " * (dialog_width + 2)) + "*")
 			end
-			$window.mvaddstr(rows.first, left_edge, "*" * (max_cols + 4))
-			$window.mvaddstr(rows.last, left_edge, "*" * (max_cols + 4))
+			$window.mvaddstr(rows.first, left_edge, "*" * (dialog_width + 4))
+			$window.mvaddstr(rows.last, left_edge, "*" * (dialog_width + 4))
 			$window.attroff(Ncurses::A_BOLD)
 
 			# text
 			$window.attron(Ncurses::COLOR_PAIR(10))
 			lines.each_with_index do |l, offset|
 				break if offset + 1 > dialog_length
-				col = center ? 40 - l.length / 2 : left_edge + 2
+				col = center ? 39 - l.length / 2 : left_edge + 2
 				$window.mvaddstr(top_row + 2 + offset, col, l)
 			end
 
@@ -256,6 +257,8 @@ module Roguelike
 					Game.player.ascend
 				when '@'
 					message_box("you pick up the ancient manuscript and begin to puzzle out the old-fashioned script\n\nthere will be few survivors\nand our only god shall be oprah\nand our fear of her shall be matched only by our adoration of her\nwe shall despair in her absence and cower in her presence and all that she decrees shall be done\n\na smattering of popsicles\n\nthe churlish screams of a thousand churlish bees filled the air on a warm summer evening in the coldest place in the solar system\n\nlove,\nthe prince")
+				when '#'
+					message_box("testeroony!", true)
 				else
 					queue_message("Pressed #{char}")
 				end
