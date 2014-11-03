@@ -13,13 +13,53 @@ module Roguelike
 			until [10,13,27,32].include?($window.getch) do; end
 		end
 
-		def message_box(text, center, rows)
-			$window.attron(Ncurses::A_BOLD)
+		def message_box(text, center = false)
+			cols = 60
+
+			# create lines of text -- up to cols characters per line
+			lines = []
+			paragraphs = text.split("\n").map(&:strip)
+			paragraphs.each do |paragraph|
+				words = paragraph.split(" ").map(&:strip)
+				line = ""
+				while !words.empty?
+					word = words.shift
+					if line.length + word.length + 1 < cols then
+						line = line + " " + word
+						line.strip!
+					else
+						lines.push(line)
+						line = word
+					end
+				end
+				lines.push(line)
+				line = ""
+			end
+
+			# $window.attron(Ncurses::A_BOLD)
 			$window.attron(Ncurses::COLOR_PAIR(9))
-			$window.mvaddstr(1, 1, text)
+			# erase area, including two character padding around entire text area
+			# draw frame
+			top_row = 12 - (lines.length / 2) - 2
+			rows = top_row .. top_row + lines.length + 3
+			rows.each do |row|
+				$window.mvaddstr(row, 8, "*" + (" " * (cols + 2)) + "*")
+			end
+			$window.mvaddstr(rows.first, 8, "*" * (cols + 4))
+			$window.mvaddstr(rows.last, 8, "*" * (cols + 4))
 			$window.attroff(Ncurses::A_BOLD)
 
+			# text
+			$window.attron(Ncurses::COLOR_PAIR(10))
+			lines.each_with_index do |l, offset|
+				col = center ? 40 - l.length / 2 : 10
+				$window.mvaddstr(top_row + 2 + offset, col, l)
+			end
+
+			$window.move(25, 0)
+
 			wait
+			$window.attron(Ncurses::COLOR_PAIR(8))
 		end
 
 		def queue_message(text, force_acknowledgment = false)
@@ -210,7 +250,7 @@ module Roguelike
 				when '<'
 					Game.player.ascend
 				when '@'
-					message_box("test", false, false)
+					message_box("a smattering of popsicles\nthe churlish screams of a thousand churlish bees filled the air on a warm summer evening in the coldest place in the solar system\n\nlove,\nthe prince", true)
 				else
 					queue_message("Pressed #{char}")
 				end
