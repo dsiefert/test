@@ -1,4 +1,4 @@
-require 'ncursesw'
+require 'ncurses'
 
 require_relative 'point'
 require_relative 'tile'

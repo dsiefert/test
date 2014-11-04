@@ -10,7 +10,7 @@
 # targets/senders) in order to make the angry tile handle the Canadian differently from the
 # player.
 
-require 'ncursesw'
+require 'ncurses'
 require_relative 'game'
 require_relative 'fortunes'
 
