@@ -251,21 +251,27 @@ module Roguelike
   			@dialog_length = [@lines.length, MAX_ROWS].min
   			left_edge = (80 - @dialog_width) / 2 - 2
 
-  			$window.attron(Ncurses::A_BOLD)
-  			$window.attron(Ncurses::COLOR_PAIR(10))
+  			$window.attron(Ncurses::COLOR_PAIR(12))
   			# erase area, including two character padding around entire text area
   			# draw frame
   			top_row = 12 - (@dialog_length / 2) - 2
   			rows = top_row .. top_row + @dialog_length + 3
   			rows.each do |row|
-  				$window.mvaddstr(row, left_edge, "*" + (" " * (@dialog_width + 2)) + "*")
+  				$window.mvaddstr(row, left_edge, " ")
+  				$window.mvaddstr(row, left_edge + @dialog_width + 3, " ")
   			end
-  			$window.mvaddstr(rows.first, left_edge, "*" * (@dialog_width + 4))
-  			$window.mvaddstr(rows.last, left_edge, "*" * (@dialog_width + 4))
-  			$window.attroff(Ncurses::A_BOLD)
+  			$window.mvaddstr(rows.first, left_edge, " " * (@dialog_width + 4))
+  			$window.mvaddstr(rows.last, left_edge, " " * (@dialog_width + 4))
+
+  			$window.attron(Ncurses::COLOR_PAIR(10))
+  			$window.mvaddstr(rows.first + 1, left_edge + 1, " " * (@dialog_width + 2))
+  			$window.mvaddstr(rows.last - 1, left_edge + 1, " " * (@dialog_width + 2))
+  			$window.attroff(Ncurses::COLOR_PAIR(10))
 
   			draw_text
         draw_scroll_bar
+
+        $window.move(29, 0)
 
   			until [10, 13, 27, 32].include?($window.getch) do; end
   			$window.attron(Ncurses::COLOR_PAIR(8))
@@ -274,12 +280,11 @@ module Roguelike
       def draw_text
   			$window.attron(Ncurses::COLOR_PAIR(10))
   			@lines[@row_offset ... @row_offset + MAX_ROWS].each_with_index do |l, offset|
-  				$window.mvaddstr((12 - (@dialog_length / 2)) + offset, (80 - @dialog_width) / 2, " " * @dialog_width)
-  				col = @center ? 39 - l.length / 2 : (80 - @dialog_width) / 2
-  				$window.mvaddstr((12 - (@dialog_length / 2)) + offset, col, l)
+  				row = offset - @row_offset
+  				$window.mvaddstr((12 - (@dialog_length / 2)) + row, (80 - @dialog_width) / 2, " " * @dialog_width)
+	 				col = @center ? 39 - l.length / 2 : (80 - @dialog_width) / 2
+  				$window.mvaddstr((12 - (@dialog_length / 2)) + row, col - 1, " " + l)
   			end
-
-  			$window.move(25, 0)
       end
 
       def draw_scroll_bar
@@ -292,6 +297,27 @@ module Roguelike
 
         ratio = MAX_ROWS.to_f / @lines.length
         size = (ratio * height).round
+
+        upper_space = ((@row_offset.to_f / @lines.length) * height).round
+        upper_space = 1 if upper_space == 0 and @row_offset > 0
+
+        lower_space = (((@lines.length - @row_offset - MAX_ROWS).to_f / @lines.length) * height).round
+        if @lines.length - MAX_ROWS - @row_offset > 0 and lower_space == 0
+        	upper_space -= 1
+        	lower_space = 1
+        end
+
+        (0 .. height - 1).each do |r|
+        	row = r + top_row
+        	if r < upper_space
+        		$window.attron(Ncurses::COLOR_PAIR(10))
+        	elsif r >= upper_space and r < upper_space + size
+        		$window.attron(Ncurses::COLOR_PAIR(11))
+        	elsif r >= upper_space + size
+        		$window.attron(Ncurses::COLOR_PAIR(10))
+        	end
+        	$window.mvaddstr(row, column, " ")
+        end
       end
     end
 	end
