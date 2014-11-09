@@ -155,13 +155,22 @@ module Roguelike
 
 				if char == -1
 					Game.over!
-				else
-					queue_message("Pressed 27+#{char}")
 				end
 
 				if char == 91
 					char_2 = $window.getch
-					queue_message("Then pressed #{char_2}")
+					case char_2
+					when 65
+						Game.player.move(0, -1)
+					when 66
+						Game.player.move(0, 1)
+					when 67
+						Game.player.move(1, 0)
+					when 68
+						Game.player.move(-1, 0)
+					else
+						queue_message("Then pressed #{char_2}")
+					end
 				end
 
 				$window.nodelay(false)
@@ -201,7 +210,7 @@ module Roguelike
 				when '<'
 					Game.player.ascend
 				when '@'
-					MessageBox.new("you pick up the ancient manuscript and begin to puzzle out the old-fashioned script\n\nthere will be few survivors\nand our only god shall be oprah\nand our fear of her shall be matched only by our adoration of her\nwe shall despair in her absence and cower in her presence and all that she decrees shall be done\n\na smattering of popsicles\n\nthe churlish screams of a thousand churlish bees filled the air on a warm summer evening in the coldest place in the solar system\n\nlove,\nthe prince")
+					MessageBox.new("you pick up the ancient manuscript and begin to puzzle out the old-fashioned script\n\nthere will be few survivors\nand our only god shall be oprah\nand our fear of her shall be matched only by our adoration of her\nwe shall despair in her absence and cower in her presence and all that she decrees shall be done\n\na smattering of popsicles\n\nthe churlish screams of a thousand churlish bees filled the air on a warm summer evening in the coldest place in the solar system\n\nlove,\nthe prince\n\nAnd the enormous ship of fools\nSailed forth across the waters\nAnd we never learned the truth\nOf what had happened to our daughters\n\nThe sun-parched desert bloomed\nAnd we never thought to ask\nWhat had been consumed\nBy our appointed task\n\n\nThe book was inscribed with strange symbols, and none of us could read it, but when we finally spoke about it, we discovered we had all had the same dreams afterwards.\n\nThere were caves, and a distant sound of whispering, and a tall, beautiful woman with a smile as cold and as alluring as a Sno-Cone.\n\nWe never spoke again and soon retreated off into our own private despairs. I learned that I'm the last to survive -- John hung himself, Ronald shot himself, Philip drank himself to death, and I never really believed that Arthur drank that antifreeze by accident.\n\nBut here I am, and I don't know why I still live, and I don't know if my family and my friends and my happiness are an undeserved mercy that was never extended to my friends, or just to keep me alive until the right time, for some purpose yet known to me.")
 				when '#'
 					message_box("testeroony!", true)
 				else
@@ -247,7 +256,7 @@ module Roguelike
   				line = ""
   			end
 
-  			@dialog_width = @center ? lines.map(&:length).max : MAX_COLS
+  			@dialog_width = @center ? @lines.map(&:length).max : MAX_COLS
   			@dialog_length = [@lines.length, MAX_ROWS].min
   			left_edge = (80 - @dialog_width) / 2 - 2
 
@@ -268,22 +277,69 @@ module Roguelike
   			$window.mvaddstr(rows.last - 1, left_edge + 1, " " * (@dialog_width + 2))
   			$window.attroff(Ncurses::COLOR_PAIR(10))
 
+  			Roguelike::Dispatcher.clear_messages
+
   			draw_text
         draw_scroll_bar
 
         $window.move(29, 0)
 
-  			until [10, 13, 27, 32].include?($window.getch) do; end
+			# if char == 27
+			# 	$window.nodelay(true)
+			# 	char = $window.getch
+
+			# 	if char == -1
+			# 		Game.over!
+			# 	else
+			# 		queue_message("Pressed 27+#{char}")
+			# 	end
+
+			# 	if char == 91
+			# 		char_2 = $window.getch
+			# 		queue_message("Then pressed #{char_2}")
+			# 	end
+
+			# 	$window.nodelay(false)
+
+  			# until [10, 13, 27, 32].include?($window.getch) do; end
+
+  			@display = true
+  			while @display
+	  			case $window.getch
+	  			when 27
+	  				$window.nodelay(true)
+	  				char = $window.getch
+	  				if char == -1
+	  					@display = false
+	  				elsif char == 91
+	  					char_2 = $window.getch
+	  					if char_2 == 65
+	  						@row_offset -= 1
+	  						@row_offset = 0 if @row_offset < 0
+	  						draw_text
+	  						draw_scroll_bar
+	  					elsif char_2 == 66
+	  						@row_offset += 1
+	  						@row_offset -= 1 if @row_offset > @lines.length - MAX_ROWS
+	  						draw_text
+	  						draw_scroll_bar
+	  					end
+	  				end
+  					$window.nodelay(false)
+  				when 10, 13
+  					@display = false
+	  			end
+	  		end
+
   			$window.attron(Ncurses::COLOR_PAIR(8))
   		end
 
       def draw_text
   			$window.attron(Ncurses::COLOR_PAIR(10))
   			@lines[@row_offset ... @row_offset + MAX_ROWS].each_with_index do |l, offset|
-  				row = offset - @row_offset
-  				$window.mvaddstr((12 - (@dialog_length / 2)) + row, (80 - @dialog_width) / 2, " " * @dialog_width)
+  				$window.mvaddstr((12 - (@dialog_length / 2)) + offset, (80 - @dialog_width) / 2, " " * @dialog_width)
 	 				col = @center ? 39 - l.length / 2 : (80 - @dialog_width) / 2
-  				$window.mvaddstr((12 - (@dialog_length / 2)) + row, col - 1, " " + l)
+  				$window.mvaddstr((12 - (@dialog_length / 2)) + offset, col - 1, " " + l)
   			end
       end
 
@@ -301,10 +357,8 @@ module Roguelike
         upper_space = ((@row_offset.to_f / @lines.length) * height).round
         upper_space = 1 if upper_space == 0 and @row_offset > 0
 
-        lower_space = (((@lines.length - @row_offset - MAX_ROWS).to_f / @lines.length) * height).round
-        if @lines.length - MAX_ROWS - @row_offset > 0 and lower_space == 0
+        if (@lines.length - MAX_ROWS - @row_offset > 0) and (upper_space + size >= height)
         	upper_space -= 1
-        	lower_space = 1
         end
 
         (0 .. height - 1).each do |r|
