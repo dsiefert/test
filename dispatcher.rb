@@ -212,8 +212,12 @@ module Roguelike
 				when '@'
 					MessageBox.new("you pick up the ancient manuscript and begin to puzzle out the old-fashioned script\n\nthere will be few survivors\nand our only god shall be oprah\nand our fear of her shall be matched only by our adoration of her\nwe shall despair in her absence and cower in her presence and all that she decrees shall be done\n\na smattering of popsicles\n\nthe churlish screams of a thousand churlish bees filled the air on a warm summer evening in the coldest place in the solar system\n\nlove,\nthe prince\n\n\nAnd the enormous ship of fools\nSailed forth across the waters\nAnd we never learned the truth\nOf what had happened to our daughters\n\nThe sun-parched desert bloomed\nAnd we never thought to ask\nWhat had been consumed\nBy our appointed task\n\n\nThe book was inscribed with strange symbols, and none of us could read it, but when we finally spoke about it, we discovered we had all had the same dreams afterwards.\n\nThere were caves, and a distant sound of whispering, and a tall, beautiful woman with a smile as cold and as alluring as a Sno-Cone.\n\nWe never spoke again and soon retreated off into our own private despairs. I learned that I'm the last to survive -- John hung himself, Ronald shot himself, Philip drank himself to death, and I never really believed that Arthur drank that antifreeze by accident.\n\nBut here I am, and I don't know why I still live, and I don't know if my family and my friends and my happiness are an undeserved mercy that was never extended to my friends, or just to keep me alive until the right time, for some purpose yet known to me.")
 				when '#'
-					message_box("testeroony!", true)
-				else
+					MessageBox.new("you pick up the ancient manuscript and begin to puzzle out the old-fashioned script\n\nthere will be few survivors\nand our only god shall be oprah\nand our fear of her shall be matched only by our adoration of her\nwe shall despair in her absence and cower in her presence and all that she decrees shall be done\n\na smattering of popsicles\n\nthe churlish screams of a thousand churlish bees filled the air on a warm summer evening in the coldest place in the solar system\n\nlove,\nthe prince\n\n\nAnd the enormous ship of fools\nSailed forth across the waters\nAnd we never learned the truth\nOf what had happened to our daughters\n\nThe sun-parched desert bloomed\nAnd we never thought to ask\nWhat had been consumed\nBy our appointed task\n\n\nThe book was inscribed with strange symbols, and none of us could read it, but when we finally spoke about it, we discovered we had all had the same dreams afterwards.\n\nThere were caves, and a distant sound of whispering, and a tall, beautiful woman with a smile as cold and as alluring as a Sno-Cone.\n\nWe never spoke again and soon retreated off into our own private despairs. I learned that I'm the last to survive -- John hung himself, Ronald shot himself, Philip drank himself to death, and I never really believed that Arthur drank that antifreeze by accident.\n\nBut here I am, and I don't know why I still live, and I don't know if my family and my friends and my happiness are an undeserved mercy that was never extended to my friends, or just to keep me alive until the right time, for some purpose yet known to me.", true)
+        when '$'
+          MessageBox.new("12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n")
+        when '%'
+          MessageBox.new("12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n", true)
+        else
 					queue_message("Pressed #{char}")
 				end
 			end
@@ -244,7 +248,7 @@ module Roguelike
   				line = ""
   				while !words.empty?
   					word = words.shift
-  					if line.length + word.length + 1 < MAX_COLS then
+  					if line.length + word.length + 1 <= MAX_COLS then
   						line = line + " " + word
   						line.strip!
   					else
@@ -260,15 +264,19 @@ module Roguelike
   			@dialog_length = [@lines.length, MAX_ROWS].min
   			left_edge = (80 - @dialog_width) / 2 - 2
 
-  			$window.attron(Ncurses::COLOR_PAIR(12))
   			# erase area, including two character padding around entire text area
   			# draw frame
   			top_row = 12 - (@dialog_length / 2) - 2
   			rows = top_row .. top_row + @dialog_length + 3
   			rows.each do |row|
+    			$window.attron(Ncurses::COLOR_PAIR(12))
   				$window.mvaddstr(row, left_edge, " ")
-  				$window.mvaddstr(row, left_edge + @dialog_width + 3, " ")
+          $window.mvaddstr(row, left_edge + @dialog_width + 3, " ")
+          $window.attron(Ncurses::COLOR_PAIR(10))
+          $window.mvaddstr(row, left_edge + 1, " ")
+          $window.mvaddstr(row, left_edge + @dialog_width + 2, " ")
   			end
+        $window.attron(Ncurses::COLOR_PAIR(12))
   			$window.mvaddstr(rows.first, left_edge, " " * (@dialog_width + 4))
   			$window.mvaddstr(rows.last, left_edge, " " * (@dialog_width + 4))
 
@@ -281,8 +289,6 @@ module Roguelike
 
   			draw_text
         draw_scroll_bar
-
-        $window.move(29, 0)
 
 			# if char == 27
 			# 	$window.nodelay(true)
@@ -339,14 +345,17 @@ module Roguelike
   			@lines[@row_offset ... @row_offset + MAX_ROWS].each_with_index do |l, offset|
   				$window.mvaddstr((12 - (@dialog_length / 2)) + offset, (80 - @dialog_width) / 2, " " * @dialog_width)
 	 				col = @center ? 39 - l.length / 2 : (80 - @dialog_width) / 2
-  				$window.mvaddstr((12 - (@dialog_length / 2)) + offset, col - 1, " " + l)
+  				$window.mvaddstr((12 - (@dialog_length / 2)) + offset, col, l)
   			end
+
+        $window.move(25, 0)
       end
 
       def draw_scroll_bar
         return true if @lines.length <= MAX_ROWS
 
         column = (80 - @dialog_width) / 2 + MAX_COLS
+        column -= 1 if @center
         height = MAX_ROWS + 2
         top_row = 12 - (MAX_ROWS / 2) - 1
         bottom_row = top_row + MAX_ROWS + 1
@@ -370,8 +379,10 @@ module Roguelike
         	elsif r >= upper_space + size
         		$window.attron(Ncurses::COLOR_PAIR(10))
         	end
-        	$window.mvaddstr(row, column, " ")
+          $window.mvaddstr(row, column, " ")
         end
+
+        $window.move(25, 0)
       end
     end
 	end
