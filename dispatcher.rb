@@ -260,6 +260,11 @@ module Roguelike
   				line = ""
   			end
 
+        # process dialog options
+        # add length of @options (in lines) to some instance variable, stop using @lines.length to represent the entire length of the dialog
+        # each option must need to know the position of its top and bottom line
+        # probably no protection against super long text plus options, there's no reason to do that anyway
+
   			@dialog_width = @center ? @lines.map(&:length).max : MAX_COLS
   			@dialog_length = [@lines.length, MAX_ROWS].min
   			left_edge = (80 - @dialog_width) / 2 - 2
@@ -289,6 +294,7 @@ module Roguelike
 
   			draw_text
         draw_scroll_bar
+        # highlight_option
 
   			@display = true
   			while @display
@@ -300,6 +306,9 @@ module Roguelike
 	  					@display = false
 	  				elsif char == 91
 	  					char_2 = $window.getch
+              # handle up and down arrows
+              # if @options is empty, just scroll a line at a time
+              # if it isn't, check to see if scrolling is needed to get the next option on the screen
 	  					if char_2 == 65
 	  						@row_offset -= 1
 	  						@row_offset = 0 if @row_offset < 0
