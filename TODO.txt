@@ -1,0 +1,9 @@
+modify MessageBox into DialogueBox, allow items to be chosen
+modify description for items to use a proper DSL, as in:
+	add_movable(*args) do |m|
+		m.listen_for :tread do |me|
+			me.method
+		end
+	end
+create items that can be picked up
+create Inventory class, have it populate DialogueBox with player's inventory items
