@@ -210,13 +210,13 @@ module Roguelike
 				when '<'
 					Game.player.ascend
 				when '@'
-					MessageBox.new("you pick up the ancient manuscript and begin to puzzle out the old-fashioned script\n\nthere will be few survivors\nand our only god shall be oprah\nand our fear of her shall be matched only by our adoration of her\nwe shall despair in her absence and cower in her presence and all that she decrees shall be done\n\na smattering of popsicles\n\nthe churlish screams of a thousand churlish bees filled the air on a warm summer evening in the coldest place in the solar system\n\nlove,\nthe prince\n\n\nAnd the enormous ship of fools\nSailed forth across the waters\nAnd we never learned the truth\nOf what had happened to our daughters\n\nThe sun-parched desert bloomed\nAnd we never thought to ask\nWhat had been consumed\nBy our appointed task\n\n\nThe book was inscribed with strange symbols, and none of us could read it, but when we finally spoke about it, we discovered we had all had the same dreams afterwards.\n\nThere were caves, and a distant sound of whispering, and a tall, beautiful woman with a smile as cold and as alluring as a Sno-Cone.\n\nWe never spoke again and soon retreated off into our own private despairs. I learned that I'm the last to survive -- John hung himself, Ronald shot himself, Philip drank himself to death, and I never really believed that Arthur drank that antifreeze by accident.\n\nBut here I am, and I don't know why I still live, and I don't know if my family and my friends and my happiness are an undeserved mercy that was never extended to my friends, or just to keep me alive until the right time, for some purpose yet known to me.")
+					DialogBox.new("you pick up the ancient manuscript and begin to puzzle out the old-fashioned script\n\nthere will be few survivors\nand our only god shall be oprah\nand our fear of her shall be matched only by our adoration of her\nwe shall despair in her absence and cower in her presence and all that she decrees shall be done\n\na smattering of popsicles\n\nthe churlish screams of a thousand churlish bees filled the air on a warm summer evening in the coldest place in the solar system\n\nlove,\nthe prince\n\n\nAnd the enormous ship of fools\nSailed forth across the waters\nAnd we never learned the truth\nOf what had happened to our daughters\n\nThe sun-parched desert bloomed\nAnd we never thought to ask\nWhat had been consumed\nBy our appointed task\n\n\nThe book was inscribed with strange symbols, and none of us could read it, but when we finally spoke about it, we discovered we had all had the same dreams afterwards.\n\nThere were caves, and a distant sound of whispering, and a tall, beautiful woman with a smile as cold and as alluring as a Sno-Cone.\n\nWe never spoke again and soon retreated off into our own private despairs. I learned that I'm the last to survive -- John hung himself, Ronald shot himself, Philip drank himself to death, and I never really believed that Arthur drank that antifreeze by accident.\n\nBut here I am, and I don't know why I still live, and I don't know if my family and my friends and my happiness are an undeserved mercy that was never extended to my friends, or just to keep me alive until the right time, for some purpose yet known to me.")
 				when '#'
-					MessageBox.new("you pick up the ancient manuscript and begin to puzzle out the old-fashioned script\n\nthere will be few survivors\nand our only god shall be oprah\nand our fear of her shall be matched only by our adoration of her\nwe shall despair in her absence and cower in her presence and all that she decrees shall be done\n\na smattering of popsicles\n\nthe churlish screams of a thousand churlish bees filled the air on a warm summer evening in the coldest place in the solar system\n\nlove,\nthe prince\n\n\nAnd the enormous ship of fools\nSailed forth across the waters\nAnd we never learned the truth\nOf what had happened to our daughters\n\nThe sun-parched desert bloomed\nAnd we never thought to ask\nWhat had been consumed\nBy our appointed task\n\n\nThe book was inscribed with strange symbols, and none of us could read it, but when we finally spoke about it, we discovered we had all had the same dreams afterwards.\n\nThere were caves, and a distant sound of whispering, and a tall, beautiful woman with a smile as cold and as alluring as a Sno-Cone.\n\nWe never spoke again and soon retreated off into our own private despairs. I learned that I'm the last to survive -- John hung himself, Ronald shot himself, Philip drank himself to death, and I never really believed that Arthur drank that antifreeze by accident.\n\nBut here I am, and I don't know why I still live, and I don't know if my family and my friends and my happiness are an undeserved mercy that was never extended to my friends, or just to keep me alive until the right time, for some purpose yet known to me.", true)
+					DialogBox.new("you pick up the ancient manuscript and begin to puzzle out the old-fashioned script\n\nthere will be few survivors\nand our only god shall be oprah\nand our fear of her shall be matched only by our adoration of her\nwe shall despair in her absence and cower in her presence and all that she decrees shall be done\n\na smattering of popsicles\n\nthe churlish screams of a thousand churlish bees filled the air on a warm summer evening in the coldest place in the solar system\n\nlove,\nthe prince\n\n\nAnd the enormous ship of fools\nSailed forth across the waters\nAnd we never learned the truth\nOf what had happened to our daughters\n\nThe sun-parched desert bloomed\nAnd we never thought to ask\nWhat had been consumed\nBy our appointed task\n\n\nThe book was inscribed with strange symbols, and none of us could read it, but when we finally spoke about it, we discovered we had all had the same dreams afterwards.\n\nThere were caves, and a distant sound of whispering, and a tall, beautiful woman with a smile as cold and as alluring as a Sno-Cone.\n\nWe never spoke again and soon retreated off into our own private despairs. I learned that I'm the last to survive -- John hung himself, Ronald shot himself, Philip drank himself to death, and I never really believed that Arthur drank that antifreeze by accident.\n\nBut here I am, and I don't know why I still live, and I don't know if my family and my friends and my happiness are an undeserved mercy that was never extended to my friends, or just to keep me alive until the right time, for some purpose yet known to me.", true)
         when '$'
-          MessageBox.new("12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n")
+          DialogBox.new("12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n")
         when '%'
-          MessageBox.new("12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n", true)
+          DialogBox.new("12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n12345 12345 12345 12345 12345 12345 12345 12345 12345 123456\n\n", true)
         else
 					queue_message("Pressed #{char}")
 				end
@@ -232,7 +232,7 @@ module Roguelike
 			end
 		end
 
-    class MessageBox
+    class DialogBox
       MAX_COLS = 60
       MAX_ROWS = 15
 
@@ -289,25 +289,6 @@ module Roguelike
 
   			draw_text
         draw_scroll_bar
-
-			# if char == 27
-			# 	$window.nodelay(true)
-			# 	char = $window.getch
-
-			# 	if char == -1
-			# 		Game.over!
-			# 	else
-			# 		queue_message("Pressed 27+#{char}")
-			# 	end
-
-			# 	if char == 91
-			# 		char_2 = $window.getch
-			# 		queue_message("Then pressed #{char_2}")
-			# 	end
-
-			# 	$window.nodelay(false)
-
-  			# until [10, 13, 27, 32].include?($window.getch) do; end
 
   			@display = true
   			while @display
