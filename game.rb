@@ -2,7 +2,7 @@ require_relative 'event/event'
 require_relative 'point'
 require_relative 'items/items'
 require_relative 'place'
-require_relative 'dispatcher'
+require_relative 'dispatcher/dispatcher'
 require_relative 'player'
 require_relative 'data/game_initializer'
 
