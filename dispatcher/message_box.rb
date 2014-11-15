@@ -219,7 +219,11 @@ module Roguelike
       end
 
       def selected_option
-        selectable_options.select(&:selected).first
+        if !selectable_options.select(&:selected).empty?
+          selectable_options.select(&:selected).first
+        else
+          selectable_options.first.select
+        end
       end
 
       def previous_option
@@ -290,22 +294,26 @@ module Roguelike
     				elsif char == 91
     					char_2 = $window.getch
     					if char_2 == 65
-                # @row_offset -= 1
-                # @row_offset = 0 if @row_offset < 0
+                @row_offset -= 1 if selected_option == selectable_options.first && @row_offset > 0
 
                 new_option = previous_option
                 selected_option.unselect
                 new_option.select
 
+                if selected_option.top < @row_offset
+                  @row_offset = selected_option.top
+                end
+
     						draw_lines
     						draw_scroll_bar
     					elsif char_2 == 66
-                # @row_offset += 1
-                # @row_offset -= 1 if @row_offset > length - MAX_ROWS
-
                 new_option = next_option
                 selected_option.unselect
                 new_option.select
+
+                if selected_option.bottom > (@row_offset + height - 1)
+                  @row_offset = selected_option.bottom - height + 1
+                end
 
     						draw_lines
     						draw_scroll_bar
@@ -329,10 +337,14 @@ module Roguelike
 
       def select
         @selected = true
+
+        self
       end
 
       def unselect
         @selected = false
+
+        self
       end
 
       def initialize(text, returnval = false)

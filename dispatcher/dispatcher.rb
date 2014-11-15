@@ -218,9 +218,23 @@ module Roguelike
             Option.new("Numbers:"),
             Option.new("one", 1),
             Option.new("two", 2),
-            Option.new("three", 3)
+            Option.new("three", 3),
+            Option.new("four", 4),
+            Option.new("five", 5),
+            Option.new("six", 6),
+            Option.new("seven", 7),
+            Option.new("eight", 8),
+            Option.new("nine", 9),
+            Option.new("Double Digits:"),
+            Option.new("ten", 10),
+            Option.new("eleven", 11),
+            Option.new("twelve", 12),
+            Option.new("thirteen", 13),
+            Option.new("fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen", 14),
+            Option.new("fifteen", 15),
+            Option.new("sixteen", 16)
           ]
-          ob = OptionsBox.new("Choose a number!", options, permit_nil: false)
+          ob = OptionsBox.new("Choose a number!", options, permit_nil: true)
           queue_message(ob.display.inspect)
         else
 					queue_message("Pressed #{char}")
