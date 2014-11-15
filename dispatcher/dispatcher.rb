@@ -220,7 +220,8 @@ module Roguelike
             Option.new("two", 2),
             Option.new("three", 3)
           ]
-          OptionsBox.new("Choose a number!", options)
+          ob = OptionsBox.new("Choose a number!", options, permit_nil: false)
+          queue_message(ob.display.inspect)
         else
 					queue_message("Pressed #{char}")
 				end

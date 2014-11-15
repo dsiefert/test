@@ -218,6 +218,32 @@ module Roguelike
         @options.reject(&:header)
       end
 
+      def selected_option
+        selectable_options.select(&:selected).first
+      end
+
+      def previous_option
+        return selectable_options.first unless selected_option
+
+        idx = selectable_options.index(selected_option)
+        if idx > 0
+          selectable_options[idx - 1]
+        else
+          selectable_options.first
+        end
+      end
+
+      def next_option
+        return selectable_options.first unless selected_option
+
+        idx = selectable_options.index(selected_option)
+        if idx < (selectable_options.length - 1)
+          selectable_options[idx + 1]
+        else
+          selectable_options.last
+        end
+      end
+
       def initialize(text, options, params = {})
         super()
         @permit_nil = !!params[:permit_nil]
@@ -226,6 +252,10 @@ module Roguelike
         break_text(text)
 
         @lines.push(Line.new(:text, ""))
+
+        if @permit_nil
+          options.push(Option.new("\nCancel", nil))
+        end
 
         options.each do |option|
           option.top = length
@@ -238,7 +268,9 @@ module Roguelike
           Error.new("No selectable options!")
         end
         selectable_options.first.select
+      end
 
+      def display
         draw_frame
 
     		Roguelike::Dispatcher.clear_messages
@@ -252,32 +284,42 @@ module Roguelike
     			when 27
     				$window.nodelay(true)
     				char = $window.getch
-    				if char == -1
+    				if char == -1 && @permit_nil
+              returnval = nil
     					@display = false
     				elsif char == 91
     					char_2 = $window.getch
-              # handle up and down arrows
-              # if @options is empty, just scroll a line at a time
-              # if it isn't, check to see if scrolling is needed to get the next option on the screen
     					if char_2 == 65
-    						@row_offset -= 1
-    						@row_offset = 0 if @row_offset < 0
+                # @row_offset -= 1
+                # @row_offset = 0 if @row_offset < 0
+
+                new_option = previous_option
+                selected_option.unselect
+                new_option.select
+
     						draw_lines
     						draw_scroll_bar
     					elsif char_2 == 66
-    						@row_offset += 1
-    						@row_offset -= 1 if @row_offset > length - MAX_ROWS
+                # @row_offset += 1
+                # @row_offset -= 1 if @row_offset > length - MAX_ROWS
+
+                new_option = next_option
+                selected_option.unselect
+                new_option.select
+
     						draw_lines
     						draw_scroll_bar
     					end
     				end
     				$window.nodelay(false)
     			when 10, 13
+            returnval = selected_option.returnval
     				@display = false
     			end
     		end
 
     		$window.attron(Ncurses::COLOR_PAIR(8))
+        returnval
       end
     end
 
@@ -293,10 +335,10 @@ module Roguelike
         @selected = false
       end
 
-      def initialize(text, returnval = nil)
+      def initialize(text, returnval = false)
         @text      = text
         @returnval = returnval
-        @header    = returnval.nil?
+        @header    = returnval == false
         @selected  = false
       end
     end
