@@ -54,10 +54,13 @@ module Roguelike
 		Ncurses.init_pair(6, 5, 0)
 		Ncurses.init_pair(7, 6, 0)
 		Ncurses.init_pair(8, 7, 0)
+
 		Ncurses.init_pair(9, 6, 4)
 		Ncurses.init_pair(10, 7, 4)
-		Ncurses.init_pair(11, 7, 6)
-		Ncurses.init_pair(12, 7, 7)
+		Ncurses.init_pair(11, 3, 4)
+		Ncurses.init_pair(12, 7, 6)
+		Ncurses.init_pair(13, 7, 7)
+    Ncurses.init_pair(14, 4, 7)
 
 		$window.bkgd(Ncurses.COLOR_PAIR(8))
 
