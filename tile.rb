@@ -8,30 +8,30 @@ module Roguelike
 		# 	rock (character: #, color: 'grey', transit-time: nil -- impassible)
 		#   rubble (character: *, color: 'grey', transit-time: 3)
 
-		@@tile_types = {
+		TILE_TYPES = {
 			soft_rock: {character: '#', color: 9, transit_time: nil, opaque: true},
 			hard_rock: {character: '#', color: 9, transit_time: nil, opaque: true},
 			dirt:      {character: '.', color: 8, transit_time: 1, opaque: false},
+			earth:     {character: '.', color: 4, transit_time: 1, opaque: false},
 			grass:     {character: '"', color: 3, transit_time: 1, opaque: false},
 			moss:      {character: '.', color: 3, transit_time: 1, opaque: false},
 			tree:      {character: 'T', color: 11, transit_time: 1.25, opaque: false},
 			obsidian:  {character: '.', color: 9, transit_time: 1, opaque: false},
 			rubble:    {character: '*', color: 9, transit_time: 5, opaque: false}
 		}
-		@@tile_types.freeze
 
 		def initialize(x, y, type)
 			super(x, y)
 
-			raise Error, "Unknown tile type: #{type}" if !type.is_a?(Integer) && @@tile_types[type].nil?
+			raise Error, "Unknown tile type: #{type}" if !type.is_a?(Integer) && TILE_TYPES[type].nil?
 
-			type = @@tile_types.to_a[type][0] if type.is_a?(Integer)
+			type = TILE_TYPES.to_a[type][0] if type.is_a?(Integer)
 
 			@type         = type
-			@color        = @@tile_types[type][:color]
-			@character    = @@tile_types[type][:character]
-			@transit_time = @@tile_types[type][:transit_time]
-			@opaque       = @@tile_types[type][:opaque]
+			@color        = TILE_TYPES[type][:color]
+			@character    = TILE_TYPES[type][:character]
+			@transit_time = TILE_TYPES[type][:transit_time]
+			@opaque       = TILE_TYPES[type][:opaque]
 			@visible      = false
 			@remembered   = false
 		end

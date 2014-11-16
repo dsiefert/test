@@ -23,8 +23,14 @@ module Roguelike
 		attr_writer :depth
 		attr_accessor :unmarked_rooms
 
+		def self.design(&block)
+			Roguelike::Design.new(block)
+		end
+
 		def initialize(place, title = nil, map = nil, options = {})
 			Event::Event.new(:initialize, self)
+
+			map = map.draw if map && map.is_a?(Roguelike::Design)
 
 			@place          = place
 			@columns        = COLUMNS

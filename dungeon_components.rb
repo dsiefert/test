@@ -1,4 +1,41 @@
 module Roguelike
+	class Design
+		def initialize(block)
+			@design = block
+			@background = :dirt
+			@map = []
+			@randoms = []
+		end
+
+		def draw
+			@design.call(self)
+
+			Roguelike::DungeonLevel::COLUMNS.times do |x|
+				@map[x] = []
+				Roguelike::DungeonLevel::ROWS.times do |y|
+					@map[x][y] = @background
+
+					@randoms.each do |r|
+						if Random.rand < r[1]
+							@map[x][y] = r[0]
+							break
+						end
+					end
+				end
+			end
+
+			@map
+		end
+
+		def background(tile)
+			@background = tile
+		end
+
+		def random(tile, proportion)
+			@randoms.push([tile, proportion])
+		end
+	end
+
 	class Room
 		MIN_WIDTH = 5
 		MAX_WIDTH = 9
