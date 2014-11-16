@@ -86,6 +86,15 @@ module Roguelike
 				place.initial_level.add_movable(Items::Staircase.new(25, 11, :down, destination: Roguelike::Place.new))
 				place.initial_level.add_movable(Items::Staircase.new(52, 11, :down, destination: Roguelike::Place.new))
 
+				place.initial_level.add_movable(Items::Item.new(*place.initial_level.random_square(:empty?), "diamond", "^", 5, takeable: true, fancy_name: "A sparkling blue diamond"))
+					.listen_for(:tread, Roguelike::Player) do
+						Dispatcher.queue_message("You see a sparkling diamond.")
+					end
+					.listen_for(:use, Roguelike::Player) do |me|
+						Dispatcher.queue_message("You kiss the diamond, and it whispers something. \"#{::Roguelike::FORTUNES.sample}\"")
+					end
+
+
 				place.initial_level
 			end
 

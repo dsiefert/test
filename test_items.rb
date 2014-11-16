@@ -26,11 +26,6 @@ module Roguelike
 					Dispatcher.queue_message("You spy the rarest and most wondrous item: an ampersand, gleaming on the cave floor!", true)
 				end
 
-			add_movable(Items::Item.new(*random_square(:empty?), "diamond", "^", 5))
-				.listen_for(:tread, Roguelike::Player) do |me|
-					Dispatcher.queue_message("The diamond whispers something. \"#{::Roguelike::FORTUNES.sample}\"")
-				end
-
 			add_movable(Items::Item.new(*random_square(:empty?), "big red dildo", "/", 2))
 				.listen_for(:tread, Roguelike::Player) do |me|
 					Dispatcher.queue_message("The big red dildo squeaks hopefully.")
