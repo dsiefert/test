@@ -81,6 +81,12 @@ module Roguelike
 			Event::Event.new(:sneeze, self)
 		end
 
+		def pick_up
+			if Event::Event.new(:take, self, local: [x, y]).unheard?
+				Dispatcher.queue_message("There is nothing there to pick up!")
+			end
+		end
+
 		def hug(direction)
 			delta_x, delta_y = direction
 			if Event::Event.new(:hug, self, local: [x + delta_x, y + delta_y]).unheard?
@@ -88,6 +94,24 @@ module Roguelike
 					Dispatcher.queue_message("You pathetically attempt to hug yourself.")
 				elsif Game.level.movables(x + delta_x, y + delta_y).empty?
 					Dispatcher.queue_message("There is nothing there to hug!")
+				end
+			end
+		end
+
+		def use_item
+			if Game.player.inventory.empty?
+				Dispatcher::MessageBox.new("You don't have any items to use yet.")
+				return false
+			else
+				ob = Dispatcher::OptionsBox.new("Pick an item to use:", Game.player.inventory.options, permit_nil: true)
+				item = ob.display
+			end
+
+			if item.nil?
+				Dispatcher.queue_message("You decide not to use any items.")
+			else
+				if Event::Event.new(:use, self, target: item).unheard?
+					Dispatcher.queue_message("You tr	se the #{item.name}, but you can't seem to figure out how.")
 				end
 			end
 		end
