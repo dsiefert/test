@@ -12,7 +12,20 @@ module Roguelike
 		end
 
 		def wait
-			until [10,13,27,32].include?($window.getch) do; end
+			waiting = true
+			while waiting do
+				char = $window.getch
+				case char
+				when 10, 13, 32
+					waiting = false
+				when 27
+					$window.nodelay(true)
+					if $window.getch == -1
+						waiting = false
+					end
+					$window.nodelay(false)
+				end
+			end
 		end
 
 		def fracture(text, cols)
@@ -58,11 +71,17 @@ module Roguelike
 			paused = false
 
 			row = 25
-			while row < 29 && (message = message_queue.shift) do
+			while (message = message_queue.shift) do
 				message_log << message
 
 				$window.attrset(Ncurses::COLOR_PAIR(8))
 				fracture(message.text, 80).each do |line|
+					if row > 29
+						wait
+						clear_messages
+						row = 25
+					end
+
 					$window.mvaddstr(row, 0, line)
 					row += 1
 				end

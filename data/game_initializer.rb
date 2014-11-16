@@ -90,10 +90,17 @@ module Roguelike
 					.listen_for(:tread, Roguelike::Player) do
 						Dispatcher.queue_message("You see a sparkling diamond.")
 					end
-					.listen_for(:use, Roguelike::Player) do |me|
+					.listen_for(:use, Roguelike::Player) do
 						Dispatcher.queue_message("You kiss the diamond, and it whispers something. \"#{::Roguelike::FORTUNES.sample}\"")
 					end
 
+				place.initial_level.add_movable(Items::Item.new(*place.initial_level.random_square(:empty?), "chattering stone", "*", 2, takeable: true, fancy_name: "The strange chattering pebble"))
+					.listen_for(:tread, Roguelike::Player) do
+						Dispatcher.queue_message("You see a strange, vibrating stone emitting a soft chattering noise.")
+					end
+					.listen_for(:use, Roguelike::Player) do
+						Dispatcher.queue_message("You hold the chattering stone to your ear to listen. \"There are wondiferous, splendissimous, magiculous things to see in these caves. I shall tell you in my voice so mellifluous of all the ridiculously charming and disarming and occasionally alarming delights that await you below. First there are the elves, reluctant to descend. They may seem like they're gentle, but only to their friends. They certainly are lovely, with skin and hair so fair. They quickly can turn deadly, when their arrows fill the air.\"")
+					end
 
 				place.initial_level
 			end
