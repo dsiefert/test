@@ -4,10 +4,3 @@ modify description for items to use a proper DSL, as in:
 			me.method
 		end
 	end
-level discription dsl, as in:
-	DungeonLevel.design do |l|
-		l.background :grass
-		l.random :tree, 0.2
-
-		l.clearing shape: elipse, x: 39, y: 12, radius: 8
-figure out method of specifying level discription in advance of making it, so I can specify a bunch of them without it having to generate all of them at once at the beginning
