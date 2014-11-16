@@ -213,30 +213,30 @@ module Roguelike
 					Game.player.ascend
 				when '@'
 					MessageBox.new("you pick up the ancient manuscript and begin to puzzle out the old-fashioned script\n\nthere will be few survivors\nand our only god shall be oprah\nand our fear of her shall be matched only by our adoration of her\nwe shall despair in her absence and cower in her presence and all that she decrees shall be done\n\na smattering of popsicles\n\nthe churlish screams of a thousand churlish bees filled the air on a warm summer evening in the coldest place in the solar system\n\nlove,\nthe prince\n\n\nAnd the enormous ship of fools\nSailed forth across the waters\nAnd we never learned the truth\nOf what had happened to our daughters\n\nThe sun-parched desert bloomed\nAnd we never thought to ask\nWhat had been consumed\nBy our appointed task\n\n\nThe book was inscribed with strange symbols, and none of us could read it, but when we finally spoke about it, we discovered we had all had the same dreams afterwards.\n\nThere were caves, and a distant sound of whispering, and a tall, beautiful woman with a smile as cold and as alluring as a Sno-Cone.\n\nWe never spoke again and soon retreated off into our own private despairs. I learned that I'm the last to survive -- John hung himself, Ronald shot himself, Philip drank himself to death, and I never really believed that Arthur drank that antifreeze by accident.\n\nBut here I am, and I don't know why I still live, and I don't know if my family and my friends and my happiness are an undeserved mercy that was never extended to my friends, or just to keep me alive until the right time, for some purpose yet unknown to me.\n\n\nThe princess spoke sweetly and her touch was gentle as she bent down over me.\n\n\"Yes, this one will do nicely,\" she said. \"How long can you keep him alive once the process begins? I wish to watch as long as possible.\"\n\n\"He will remain alive for several hours, Your Highness, and his suffering will be exquisite,\" the doctor told her. \"I promise you'll enjoy his screams.\"")
-        when '#'
-          options = [
-            Option.new("Numbers:"),
-            Option.new("one", 1),
-            Option.new("two", 2),
-            Option.new("three", 3),
-            Option.new("four", 4),
-            Option.new("five", 5),
-            Option.new("six", 6),
-            Option.new("seven", 7),
-            Option.new("eight", 8),
-            Option.new("nine", 9),
-            Option.new("Double Digits:"),
-            Option.new("ten", 10),
-            Option.new("eleven", 11),
-            Option.new("twelve", 12),
-            Option.new("thirteen", 13),
-            Option.new("fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen", 14),
-            Option.new("fifteen", 15),
-            Option.new("sixteen", 16)
-          ]
-          ob = OptionsBox.new("Choose a number!", options, permit_nil: true)
-          queue_message(ob.display.inspect)
-        else
+				when '#'
+					options = [
+						Option.new("Numbers:"),
+						Option.new("one", 1),
+						Option.new("two", 2),
+						Option.new("three", 3),
+						Option.new("four", 4),
+						Option.new("five", 5),
+						Option.new("six", 6),
+						Option.new("seven", 7),
+						Option.new("eight", 8),
+						Option.new("nine", 9),
+						Option.new("\nDouble Digits:"),
+						Option.new("ten", 10),
+						Option.new("eleven", 11),
+						Option.new("twelve", 12),
+						Option.new("thirteen", 13),
+						Option.new("fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen fourteen", 14),
+						Option.new("fifteen", 15),
+						Option.new("sixteen", 16)
+					]
+					ob = OptionsBox.new("Choose a number!", options, permit_nil: true)
+					queue_message(ob.display.inspect)
+				else
 					queue_message("Pressed #{char}")
 				end
 			end
