@@ -1,5 +1,7 @@
 module Roguelike
 	class Player < Point
+		attr_reader :inventory
+
 		include ::Roguelike::Event::Capable
 
 		def sight_radius
@@ -9,6 +11,7 @@ module Roguelike
 		def initialize
 			@character = "@"
 			@color = 16
+			@inventory = Roguelike::Inventory.new(:player)
 		end
 
 		def set_location(x, y = nil)

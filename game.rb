@@ -3,6 +3,7 @@ require_relative 'point'
 require_relative 'items/items'
 require_relative 'place'
 require_relative 'dispatcher/dispatcher'
+require_relative 'inventory'
 require_relative 'player'
 require_relative 'data/game_initializer'
 
