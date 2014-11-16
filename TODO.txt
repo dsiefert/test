@@ -4,3 +4,7 @@ modify description for items to use a proper DSL, as in:
 			me.method
 		end
 	end
+more level design options:
+	clearings
+	contiguous "blobs" of tiles with randomy shape
+	specify designs instead of destinations on staircases
