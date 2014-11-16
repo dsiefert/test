@@ -15,6 +15,30 @@ module Roguelike
 			until [10,13,27,32].include?($window.getch) do; end
 		end
 
+		def fracture(text, cols)
+			lines = []
+
+			paragraphs = text.split("\n").map(&:strip)
+			paragraphs.each do |paragraph|
+				words = paragraph.split(" ").map(&:strip)
+				line = ""
+				while !words.empty?
+					word = words.shift
+					if line.length + word.length + 1 <= cols then
+						line = line + " " + word
+						line.strip!
+					else
+						lines.push(line)
+						line = word
+					end
+				end
+				lines.push(line)
+				line = ""
+			end
+
+			lines
+		end
+
 		def queue_message(text, force_acknowledgment = false)
 			message_queue << Message.new(text, force_acknowledgment)
 
@@ -38,15 +62,16 @@ module Roguelike
 				message_log << message
 
 				$window.attrset(Ncurses::COLOR_PAIR(8))
-				$window.mvaddstr(row, 0, message.text)
+				fracture(message.text, 80).each do |line|
+					$window.mvaddstr(row, 0, line)
+					row += 1
+				end
 
 				if message.force_acknowledgment || Game.over?
 					$window.addstr(" (paused)")
 					paused = true
 					wait
 				end
-
-				row += 1
 			end
 
 			clear_messages if paused

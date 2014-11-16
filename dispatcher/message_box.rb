@@ -38,28 +38,10 @@ module Roguelike
 				# create lines of text -- up to dialog_width characters per line
 				@lines = [] if !@lines
 
-				line_count = 0
-				paragraphs = text.split("\n").map(&:strip)
-				paragraphs.each do |paragraph|
-					words = paragraph.split(" ").map(&:strip)
-					line = ""
-					while !words.empty?
-						word = words.shift
-						if line.length + word.length + 1 <= MAX_COLS then
-							line = line + " " + word
-							line.strip!
-						else
-							@lines.push(Line.new(type, line, option))
-							line = word
-							line_count += 1
-						end
-					end
-					@lines.push(Line.new(type, line, option))
-					line_count += 1
-					line = ""
-				end
+				rows = Dispatcher::fracture(text, MAX_COLS)
+				rows.each{ |row| @lines.push(Line.new(type, row, option)) }
 
-				line_count
+				rows.count
 			end
 
 			def draw_lines
