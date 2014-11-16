@@ -105,7 +105,27 @@ module Roguelike
 				when "9"
 					[1, -1]
 				when 27.chr
-					nil
+					$window.nodelay(true)
+					char = $window.getch
+
+					retval = nil
+
+					if char == 91
+						char_2 = $window.getch
+						case char_2
+						when 65
+							retval = [0, -1]
+						when 66
+							retval = [0, 1]
+						when 67
+							retval = [1, 0]
+						when 68
+							retval = [-1, 0]
+						end
+					end
+
+					$window.nodelay(false)
+					retval
 				else
 					nil
 				end
