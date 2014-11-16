@@ -11,7 +11,7 @@ module Roguelike
 			end
 
 			def alert(sender, event)
-				if (Game.level == @listener || Game.level.movables.include?(@listener)) && (@sender.nil? || @sender === sender)
+				if (Game.level == @listener || Game.level.movables.include?(@listener) || Game.player.inventory.include?(@listener)) && (@sender.nil? || @sender === sender)
 					@listener.send(@callback, sender)
 					event.hear
 				end
