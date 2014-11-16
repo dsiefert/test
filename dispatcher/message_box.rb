@@ -166,6 +166,12 @@ module Roguelike
 				@display = true
 				while @display
 					case $window.getch
+					when '8'.ord
+						@row_offset -= 1
+						@row_offset = 0 if @row_offset < 0
+					when '2'.ord
+						@row_offset += 1
+						@row_offset -= 1 if @row_offset > length - MAX_ROWS
 					when 27
 						$window.nodelay(true)
 						char = $window.getch
@@ -176,19 +182,17 @@ module Roguelike
 							if char_2 == 65
 								@row_offset -= 1
 								@row_offset = 0 if @row_offset < 0
-								draw_lines
-								draw_scroll_bar
 							elsif char_2 == 66
 								@row_offset += 1
 								@row_offset -= 1 if @row_offset > length - MAX_ROWS
-								draw_lines
-								draw_scroll_bar
 							end
 						end
 						$window.nodelay(false)
 					when 10, 13
 						@display = false
 					end
+					draw_lines
+					draw_scroll_bar
 				end
 
 				$window.attron(Ncurses::COLOR_PAIR(8))
@@ -256,6 +260,28 @@ module Roguelike
 				selectable_options.first.select
 			end
 
+			def select_previous
+				@row_offset -= 1 if selected_option == selectable_options.first && @row_offset > 0
+
+				new_option = previous_option
+				selected_option.unselect
+				new_option.select
+
+				if selected_option.top < @row_offset
+					@row_offset = selected_option.top
+				end
+			end
+
+			def select_next
+				new_option = next_option
+				selected_option.unselect
+				new_option.select
+
+				if selected_option.bottom > (@row_offset + height - 1)
+					@row_offset = selected_option.bottom - height + 1
+				end
+			end
+
 			def display
 				draw_frame
 
@@ -267,6 +293,10 @@ module Roguelike
 				@display = true
 				while @display
 					case $window.getch
+					when '8'.ord
+						select_previous
+					when '2'.ord
+						select_next
 					when 27
 						$window.nodelay(true)
 						char = $window.getch
@@ -276,29 +306,9 @@ module Roguelike
 						elsif char == 91
 							char_2 = $window.getch
 							if char_2 == 65
-								@row_offset -= 1 if selected_option == selectable_options.first && @row_offset > 0
-
-								new_option = previous_option
-								selected_option.unselect
-								new_option.select
-
-								if selected_option.top < @row_offset
-									@row_offset = selected_option.top
-								end
-
-								draw_lines
-								draw_scroll_bar
+								select_previous
 							elsif char_2 == 66
-								new_option = next_option
-								selected_option.unselect
-								new_option.select
-
-								if selected_option.bottom > (@row_offset + height - 1)
-									@row_offset = selected_option.bottom - height + 1
-								end
-
-								draw_lines
-								draw_scroll_bar
+								select_next
 							end
 						end
 						$window.nodelay(false)
@@ -306,6 +316,8 @@ module Roguelike
 						returnval = selected_option.returnval
 						@display = false
 					end
+					draw_lines
+					draw_scroll_bar
 				end
 
 				$window.attron(Ncurses::COLOR_PAIR(8))
