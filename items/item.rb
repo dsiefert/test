@@ -7,7 +7,7 @@ module Roguelike
 		class Item < ::Roguelike::Point
 			include ::Roguelike::Event::Capable
 
-			attr_reader   :name, :takeable, :fancy_name
+			attr_reader   :name, :takeable, :fancy_name, :category
 			attr_accessor :color
 
 			def initialize(x, y, name, character, color, params = {}) #will later add type or something
@@ -16,8 +16,15 @@ module Roguelike
 				@name, @character, @color = name, character, color
 				@takeable                 = !!params[:takeable]
 				@fancy_name               = params[:fancy_name] || name.capitalize
+				@category                 = params[:category] || "Miscellaneous"
 
-				listen_for(:tread, Game.player) { Dispatcher.queue_message("You step on a #{name}!") }
+				listen_for(:tread, Game.player) do
+					if takeable
+						Dispatcher.queue_message("You see a #{name} on the ground.")
+					else
+						Dispatcher.queue_message("You step on a #{name}!")
+					end
+				end
 
 				listen_for(:hug, Game.player) do |me|
 					Dispatcher.queue_message("You hug the #{name}. What kind of freak are you?")

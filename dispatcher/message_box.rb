@@ -241,7 +241,7 @@ module Roguelike
 
 				break_text(text)
 
-				@lines.push(Line.new(:text, ""))
+				@lines.push(Line.new(:text, "")) unless options.first.header
 
 				if @permit_nil
 					options.push(Option.new("\nCancel", nil))

@@ -14,9 +14,18 @@ module Roguelike
 		def options
 			return nil if empty?
 
-			@items.map do |item|
-				Roguelike::Dispatcher::Option.new(item.fancy_name, item)
+			categories = @items.map(&:category).uniq.sort
+			categories.delete("Miscellaneous") && categories.push("Miscellaneous") if categories.index("Miscellaneous")
+
+			returnval = []
+			categories.each do |c|
+				returnval.push(Roguelike::Dispatcher::Option.new("\n" + c))
+				@items.select{ |i| i.category == c }.each do |item|
+					returnval.push(Roguelike::Dispatcher::Option.new(item.fancy_name, item))
+				end
 			end
+
+			returnval
 		end
 
 		def empty?

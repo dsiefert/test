@@ -111,7 +111,7 @@ module Roguelike
 				Dispatcher.queue_message("You decide not to use any items.")
 			else
 				if Event::Event.new(:use, self, target: item).unheard?
-					Dispatcher.queue_message("You tr	se the #{item.name}, but you can't seem to figure out how.")
+					Dispatcher.queue_message("You try to use the #{item.name}, but you can't seem to figure out how.")
 				end
 			end
 		end
