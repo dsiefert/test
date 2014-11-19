@@ -98,9 +98,28 @@ module Roguelike
 			end
 		end
 
+		def drink
+			potions = Game.player.inventory.options("Potions")
+			if potions.empty?
+				Dispatcher.queue_message("You don't have anything to drink.")
+				return
+			end
+
+			ob = Dispatcher::OptionsBox.new("Pick a potion to drink:", potions, permit_nil: true)
+			item = ob.display
+
+			if item.nil?
+				Dispatcher.queue_message("You decide not to drink anything.")
+			else
+				if Event::Event.new(:drink, self, target: item).unheard?
+					Dispatcher.queue_message("You can't seem to drink the #{item.name}.")
+				end
+			end
+		end
+
 		def use_item
 			if Game.player.inventory.empty?
-				Dispatcher::MessageBox.new("You don't have any items to use yet.")
+				Dispatcher.queue_message("You don't have any items to use yet.")
 				return false
 			else
 				ob = Dispatcher::OptionsBox.new("Pick an item to use:", Game.player.inventory.options, permit_nil: true)

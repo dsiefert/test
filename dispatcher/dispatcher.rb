@@ -280,6 +280,8 @@ module Roguelike
 				when 'u'
 					Game.player.use_item
 				when 'd'
+					Game.player.drink
+				when 'D'
 					$window.move(25, 0)
 					MessageBox.new(eval(gets))
 				when '@'

@@ -11,16 +11,20 @@ module Roguelike
 			@items.push(item)
 		end
 
-		def options
-			return nil if empty?
-
-			categories = @items.map(&:category).uniq.sort
-			categories.delete("Miscellaneous") && categories.push("Miscellaneous") if categories.index("Miscellaneous")
-
+		def options(category = nil)
 			returnval = []
-			categories.each do |c|
-				returnval.push(Roguelike::Dispatcher::Option.new("\n" + c))
-				@items.select{ |i| i.category == c }.each do |item|
+			if !category
+				categories = @items.map(&:category).uniq.sort
+				categories.delete("Miscellaneous") && categories.push("Miscellaneous") if categories.index("Miscellaneous")
+
+				categories.each do |c|
+					returnval.push(Roguelike::Dispatcher::Option.new("\n" + c))
+					@items.select{ |i| i.category == c }.each do |item|
+						returnval.push(Roguelike::Dispatcher::Option.new(item.fancy_name, item))
+					end
+				end
+			else
+				@items.select{ |i| i.category == category }.each do |item|
 					returnval.push(Roguelike::Dispatcher::Option.new(item.fancy_name, item))
 				end
 			end
