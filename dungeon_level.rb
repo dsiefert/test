@@ -158,6 +158,13 @@ module Roguelike
 			walkable?(x, y) && movables(x, y).empty?
 		end
 
+		def unfilled?(x, y = nil)
+			return false if x.nil?
+			x, y = x unless y
+
+			walkable?(x, y) && movables(x, y).reject{ |m| !m.walkable? }.empty?
+		end
+
 		def walkable_except_player?(x, y = nil)
 			return false if x.nil?
 			x, y = x if y.nil?
