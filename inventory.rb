@@ -11,6 +11,10 @@ module Roguelike
 			@items.push(item)
 		end
 
+		def remove(item)
+			@items.delete(item)
+		end
+
 		def options(category = nil)
 			returnval = []
 			if !category
