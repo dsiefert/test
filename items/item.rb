@@ -10,33 +10,36 @@ module Roguelike
 			attr_reader   :name, :takeable, :fancy_name, :category
 			attr_accessor :color
 
-			def initialize(x, y, name, character, color, params = {}) #will later add type or something
+			def initialize(x, y, name = nil, character = nil, color = nil, params = {}) #will later add type or something
 				super(x, y)
 
-				@name, @character, @color = name, character, color
+				@name      = name if name
+				@character = character if character
+				@color     = color if color
+
 				@takeable                 = !!params[:takeable]
-				@fancy_name               = params[:fancy_name] || name.capitalize
+				@fancy_name               = params[:fancy_name] || name ? name.capitalize : "insert name"
 				@category                 = params[:category] || "Miscellaneous"
 
-				listen_for(:tread, Game.player) do
+				listen_for(:tread, Game.player) do |me|
 					if takeable
-						Dispatcher.queue_message("You see a #{name} on the ground.")
+						Dispatcher.queue_message("You see a #{me.name} on the ground.")
 					else
-						Dispatcher.queue_message("You step on a #{name}!")
+						Dispatcher.queue_message("You step on a #{me.name}!")
 					end
 				end
 
 				listen_for(:hug, Game.player) do |me|
-					Dispatcher.queue_message("You hug the #{name}. What kind of freak are you?")
+					Dispatcher.queue_message("You hug the #{me.name}. What kind of freak are you?")
 				end
 
 				listen_for(:take, Game.player) do |me|
 					if @takeable
-						Dispatcher.queue_message("You take the #{name}.")
+						Dispatcher.queue_message("You take the #{me.name}.")
 						Game.player.inventory.add(me)
 						Game.level.remove_movable(self)
 					else
-						Dispatcher.queue_message("You can't possibly take the #{name}!")
+						Dispatcher.queue_message("You can't possibly take the #{me.name}!")
 					end
 				end
 
@@ -52,9 +55,10 @@ module Roguelike
 				@walkable
 			end
 
-			def remove
+			def die
 				Event::Event.forget_object(self)
 				Game.level.remove_movable(self)
+				Game.player.inventory.remove(self)
 			end
 		end
 	end
