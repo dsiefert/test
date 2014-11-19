@@ -30,8 +30,10 @@ module Roguelike
 						Dispatcher.queue_message("You hold the chattering stone to your ear to listen. \"There are wondiferous, splendissimous, magiculous things to see in these caves. I shall tell you in my voice so mellifluous of all the ridiculously charming and disarming and occasionally alarming delights that await you below. First there are the elves, reluctant to descend. They may seem like they're gentle, but only to their friends. They certainly are lovely, with skin and hair so fair. They quickly can turn deadly, when their arrows fill the air.\"")
 					end
 
-				place.initial_level.add_movable(Items::Item.new(*place.initial_level.random_square(:empty?), "blue potion", "!", 5, takeable: true, fancy_name: "The blue potion", category: "Potions"))
-				place.initial_level.add_movable(Items::Item.new(*place.initial_level.random_square(:empty?), "yellow potion", "!", 12, takeable: true, fancy_name: "The yellow potion", category: "Potions"))
+				place.initial_level.add_movable(Items::PotionOfCourage.new(*place.initial_level.random_square(:unfilled?)))
+				spot = place.initial_level.random_square(:unfilled?)
+				place.initial_level.add_movable(Items::PotionOfInvulnerability.new(*spot))
+				place.initial_level.add_movable(Items::PotionOfPrattle.new(*spot))
 
 				place.initial_level
 			end
